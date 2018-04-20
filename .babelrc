@@ -1,5 +1,4 @@
 {
-    "presets": ["env"],
-    "plugins":[]//,["transform-runtime"]
-    //"comments": true
-  }
+  "presets": ["env"],
+  "plugins": []
+}
