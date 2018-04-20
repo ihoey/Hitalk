@@ -143,33 +143,34 @@
             <div class="comment"></div>
         </div>
     </div>
-    <div class="copy">
+    <!-- <div class="copy">
         &copy; 2017 <a href="https://github.com/xCss" target="_blank">云淡风轻</a>
-    </div>
+    </div> -->
     <script>
         var valine = new Valine();
         valine.init({
             el: '.comment',
-            app_id: '3GiiCyXCrGbOIH3EelCfJ6yw-gzGzoHsz',
-            app_key: 'iuneD4hXPQImdHQSRE0aOcRF',
+            app_id: 'Ir6SE0GwBzFxczMqXXVpCF8d-gzGzoHsz',
+            app_key: 'SnlgtrRYvxJimSYDRw2GBr6H',
             placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
             path: window.location.pathname,
-            avatar:'mm', // 1.1.7 新增(mm/identicon/monsterid/wavatar/retro)
+            avatar: 'wavatar', // 1.1.7 新增(mm/identicon/monsterid/wavatar/retro)
             // guest_info: ['nick'] // 默认 ['nick', 'mail', 'link']
         })
 
-        if (!/^http:\/\/localhost/.test(location.href)) {
-            var _hmt = _hmt || [];
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?fc2301b16d1a46c7899ef2b5afb651cc";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        }
+        // if (!/^http:\/\/localhost/.test(location.href)) {
+        //     var _hmt = _hmt || [];
+        //     var hm = document.createElement("script");
+        //     hm.src = "https://hm.baidu.com/hm.js?fc2301b16d1a46c7899ef2b5afb651cc";
+        //     var s = document.getElementsByTagName("script")[0];
+        //     s.parentNode.insertBefore(hm, s);
+        // }
 
-        window.onload = function() {
+        window.onload = function () {
             var iframes = document.querySelectorAll('iframe');
-            iframes[0].setAttribute('src', 'https://ghbtns.com/github-btn.html?user=xCss&repo=valine&type=watch&count=true');
-            iframes[1].setAttribute('src', 'https://ghbtns.com/github-btn.html?user=xCss&type=follow&count=true');
+            iframes[0].setAttribute('src',
+                'https://ghbtns.com/github-btn.html?user=ihoey&repo=valine&type=watch&count=true');
+            iframes[1].setAttribute('src', 'https://ghbtns.com/github-btn.html?user=ihoey&type=follow&count=true');
         }
     </script>
 </body>

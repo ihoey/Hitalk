@@ -10,7 +10,7 @@ const gravatar = {
     cdn: 'https://gravatar.cat.net/avatar/',
     ds: ['mm', 'identicon', 'monsterid', 'wavatar', 'retro', ''],
     params: '?s=40',
-    hide: !1 
+    hide: !1
 };
 const defaultComment = {
     comment: '',
@@ -75,7 +75,27 @@ class Valine {
             });
 
             let placeholder = option.placeholder || '';
-            let eleHTML = `<div class="vwrap"><div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div><div class="vedit"><textarea class="veditor vinput" placeholder="${placeholder}"></textarea></div><div class="vcontrol"><div class="col col-60" title="MarkDown is Support"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M14.85 3H1.15C.52 3 0 3.52 0 4.15v7.69C0 12.48.52 13 1.15 13h13.69c.64 0 1.15-.52 1.15-1.15v-7.7C16 3.52 15.48 3 14.85 3zM9 11H7V8L5.5 9.92 4 8v3H2V5h2l1.5 2L7 5h2v6zm2.99.5L9.5 8H11V5h2v3h1.5l-2.51 3.5z"></path></svg> MarkDown is Support</div><div class="col col-40 text-right"><button type="button" class="vsubmit vbtn">回复</button></div></div><div style="display:none;" class="vmark"></div></div><div class="info"><div class="count col"></div></div><div class="vloading"></div><div class="vempty" style="display:none;"></div><ul class="vlist"></ul><div class="vpage txt-center"></div><div class="info"><div class="power txt-right">Powered By <a href="http://valine.js.org" target="_blank">Valine-v${_root.version}</a></div></div>`;
+            let eleHTML = `
+            <div class="vwrap">
+                <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
+                <div class="vedit">
+                    <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
+                </div>
+                <div class="vcontrol">
+                    <div class="col col-60" title="MarkDown is Support">MarkDown is Support</div>
+                    <div class="col col-40 text-right">
+                        <button type="button" class="vsubmit vbtn">回复</button>
+                    </div>
+                </div>
+                <div style="display:none;" class="vmark"></div>
+            </div>
+            <div class="info">
+                <div class="count col"></div>
+            </div>
+            <div class="vloading"></div>
+            <div class="vempty" style="display:none;"></div>
+            <ul class="vlist"></ul>
+            <div class="vpage txt-center"></div>`;
             _root.el.innerHTML = eleHTML;
 
             // Empty Data
@@ -270,7 +290,9 @@ class Valine {
                 let _el = _root.el.querySelector(`.${i}`);
                 inputs[_v] = _el;
                 Event.on('input', _el, (e) => {
-                    defaultComment[_v] = _v === 'comment' ? marked(_el.value, { sanitize: !0 }) : HtmlUtil.encode(_el.value);
+                    defaultComment[_v] = _v === 'comment' ? marked(_el.value, {
+                        sanitize: !0
+                    }) : HtmlUtil.encode(_el.value);
                 });
             }
         }
@@ -494,7 +516,7 @@ class Valine {
         }
 
         let mailEvt = (o) => {
-            _root.v.User.requestPasswordReset(o.mail).then(ret => { }).catch(e => {
+            _root.v.User.requestPasswordReset(o.mail).then(ret => {}).catch(e => {
                 if (e.code == 1) {
                     _root.alert.show({
                         type: 0,
