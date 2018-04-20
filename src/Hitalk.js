@@ -1,9 +1,10 @@
-﻿/**
- * @Valine
- * Author: xCss
- * Github: https://github.com/xCss/Valine
- * Website: https://valine.js.org
+﻿/*
+ * @Author: ihoey 
+ * @Date: 2018-04-20 23:53:17 
+ * @Last Modified by: ihoey
+ * @Last Modified time: 2018-04-21 00:41:32
  */
+
 import md5 from 'blueimp-md5';
 import marked from 'marked';
 const gravatar = {
@@ -26,9 +27,9 @@ const defaultComment = {
 const GUEST_INFO = ['nick', 'mail', 'link'];
 
 const store = localStorage;
-class Valine {
+class Hitalk {
     /**
-     * Valine constructor function
+     * Hitalk constructor function
      * @param {Object} option
      * @constructor
      */
@@ -38,12 +39,12 @@ class Valine {
         _root.version = '1.1.8-beta';
 
         _root.md5 = md5;
-        // Valine init
+        // Hitalk init
         !!option && _root.init(option);
     }
 
     /**
-     * Valine Init
+     * Hitalk Init
      * @param {Object} option
      */
     init(option) {
@@ -54,7 +55,7 @@ class Valine {
                 throw `The target element was not found.`;
             }
             _root.el = el;
-            _root.el.classList.add('valine');
+            _root.el.classList.add('Hitalk');
 
             const guest_info = option.guest_info || GUEST_INFO;
             const inputEl = guest_info.map(item => {
@@ -66,7 +67,7 @@ class Valine {
                         return '<input name="mail" placeholder="邮箱" class="vmail vinput" type="email">';
                         break;
                     case 'link':
-                        return '<input name="link" placeholder="网址(http://)" class="vlink vinput" type="text">';
+                        return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">';
                         break;
                     default:
                         return '';
@@ -150,9 +151,9 @@ class Valine {
             defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
 
         } catch (ex) {
-            let issue = 'https://github.com/xCss/Valine/issues';
-            if (_root.el) _root.nodata.show(`<pre style="color:red;text-align:left;">${ex}<br>Valine:<b>${_root.version}</b><br>反馈：${issue}</pre>`);
-            else console && console.log(`%c${ex}\n%cValine%c${_root.version} ${issue}`, 'color:red;', 'background:#000;padding:5px;line-height:30px;color:#fff;', 'background:#456;line-height:30px;padding:5px;color:#fff;');
+            let issue = 'https://github.com/ihoey/Hitalk/issues';
+            if (_root.el) _root.nodata.show(`<pre style="color:red;text-align:left;">${ex}<br>Hitalk:<b>${_root.version}</b><br>反馈：${issue}</pre>`);
+            else console && console.log(`%c${ex}\n%cHitalk%c${_root.version} ${issue}`, 'color:red;', 'background:#000;padding:5px;line-height:30px;color:#fff;', 'background:#456;line-height:30px;padding:5px;color:#fff;');
             return;
         }
 
@@ -219,16 +220,6 @@ class Valine {
             query.descending('createdAt');
             return query;
         }
-        // let initPages = (cb) => {
-        //     commonQuery().count().then(count => {
-        //         if (count > 0) {
-        //             let _vpage = _root.el.querySelector('.vpage');
-        //             _root.el.querySelector('.count').innerHTML = `评论(<span class="num">${count}</span>)`;
-        //         }
-        //     }).catch(ex => {
-        //         console.log(ex);
-        //     })
-        // }
         let query = (pageNo = 1) => {
             _root.loading.show();
             let cq = commonQuery();
@@ -299,7 +290,7 @@ class Valine {
 
         // cache
         let getCache = () => {
-            let s = store && store.ValineCache;
+            let s = store && store.HitalkCache;
             if (s) {
                 s = JSON.parse(s);
                 let m = guest_info;
@@ -434,7 +425,7 @@ class Valine {
             }
             comment.setACL(getAcl());
             comment.save().then((ret) => {
-                defaultComment['nick'] != 'Guest' && store && store.setItem('ValineCache', JSON.stringify({
+                defaultComment['nick'] != 'Guest' && store && store.setItem('HitalkCache', JSON.stringify({
                     nick: defaultComment['nick'],
                     link: defaultComment['link'],
                     mail: defaultComment['mail']
@@ -710,4 +701,4 @@ const padWithZeros = (vNumber, width) => {
     return numAsString;
 }
 
-module.exports = Valine;
+module.exports = Hitalk;

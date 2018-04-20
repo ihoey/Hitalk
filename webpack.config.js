@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 var autoprefixer = require('autoprefixer');
 
-var libraryName = 'Valine';
+// var libraryName = 'Hitalk';
 var ROOT_PATH = path.resolve(__dirname);
 var APP_PATH = path.resolve(ROOT_PATH, 'src');
 var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
@@ -25,8 +25,8 @@ module.exports = env => {
                     // 删除所有的 `console` 语句
                     drop_console: true,
                 },
-                mangle:{
-                    safari10:true
+                mangle: {
+                    safari10: true
                 }
             })
         );
@@ -39,9 +39,9 @@ module.exports = env => {
     }
     return {
         entry: {
-            Valine: ['./src/Valine.scss', './src/Valine.js'],
-            'ValinePure': './src/Valine.js',
-            //'Valine.locales': './src/Valine.locales.js',
+            Hitalk: ['./src/Hitalk.scss', './src/Hitalk.js'],
+            'HitalkPure': './src/Hitalk.js',
+            //'Hitalk.locales': './src/Hitalk.locales.js',
             // detect: './src/detect.js',
             // escape: './src/escape.js'
         },
@@ -98,7 +98,6 @@ module.exports = env => {
                 //loader: 'url-loader?limit=40000'
             }]
         },
-
         plugins: plugins
     }
 };
