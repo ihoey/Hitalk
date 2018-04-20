@@ -2,11 +2,12 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-21 00:41:32
+ * @Last Modified time: 2018-04-21 01:09:34
  */
 
 import md5 from 'blueimp-md5';
 import marked from 'marked';
+import detect from './detect';
 const gravatar = {
     cdn: 'https://gravatar.cat.net/avatar/',
     ds: ['mm', 'identicon', 'monsterid', 'wavatar', 'retro', ''],
@@ -246,8 +247,12 @@ class Hitalk {
             let _vcard = document.createElement('li');
             _vcard.setAttribute('class', 'vcard');
             _vcard.setAttribute('id', ret.id);
+            let _ua = detect(ret.get("ua"))
             let _img = gravatar['hide'] ? '' : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`;
-            _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({ link: ret.get('link'), mail: ret.get('mail') })}" target="_blank" >${ret.get("nick")}</a></div><div class="vcontent">${ret.get("comment")}</div><div class="vfooter"><span class="vtime">${timeAgo(ret.get("createdAt"))}</span><span rid='${ret.id}' at='@${ret.get('nick')}' mail='${ret.get('mail')}' class="vat">回复</span><div></section>`;
+            _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({ link: ret.get('link'), mail: ret.get('mail') })}" target="_blank" >${ret.get("nick")}</a>
+            <span class="vsys">${_ua.os} ${_ua.osVersion}</span>
+            <span class="vsys">${_ua.browser} ${_ua.version}</span>
+            </div><div class="vcontent">${ret.get("comment")}</div><div class="vfooter"><span class="vtime">${timeAgo(ret.get("createdAt"))}</span><span rid='${ret.id}' at='@${ret.get('nick')}' mail='${ret.get('mail')}' class="vat">回复</span><div></section>`;
             let _vlist = _root.el.querySelector('.vlist');
             let _vlis = _vlist.querySelectorAll('li');
             let _vat = _vcard.querySelector('.vat');
