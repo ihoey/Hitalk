@@ -24,8 +24,7 @@
   "autoupdate": {
     "source": "git",
     "target": "git://github.com/xcss/Valine.git",
-    "fileMap": [
-      {
+    "fileMap": [{
         "basePath": "dist",
         "files": [
           "Valine*.+(js|map|css)"
