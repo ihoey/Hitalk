@@ -223,6 +223,10 @@
                 float: left;
                 border-radius: 50%;
                 margin-right: .7525rem;
+                transition: all .5s;
+                &:hover{
+                    transform: rotate(720deg);
+                }
             }
             .vhead {
                 line-height: 1;

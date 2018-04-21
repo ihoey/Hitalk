@@ -2,7 +2,7 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-21 01:09:34
+ * @Last Modified time: 2018-04-21 12:27:44
  */
 
 import md5 from 'blueimp-md5';
@@ -51,6 +51,7 @@ class Hitalk {
     init(option) {
         let _root = this;
         try {
+            // get el
             let el = ({}).toString.call(option.el) === "[object HTMLDivElement]" ? option.el : document.querySelectorAll(option.el)[0];
             if (({}).toString.call(el) != '[object HTMLDivElement]') {
                 throw `The target element was not found.`;
@@ -58,6 +59,7 @@ class Hitalk {
             _root.el = el;
             _root.el.classList.add('Hitalk');
 
+            // 自定义 header
             const guest_info = option.guest_info || GUEST_INFO;
             const inputEl = guest_info.map(item => {
                 switch (item) {
@@ -75,7 +77,8 @@ class Hitalk {
                         break;
                 }
             });
-
+            
+            // 填充元素
             let placeholder = option.placeholder || '';
             let eleHTML = `
             <div class="vwrap">
@@ -135,6 +138,7 @@ class Hitalk {
             gravatar['params'] = '?d=' + (gravatar['ds'].indexOf(option.avatar) > -1 ? option.avatar : 'mm');
             gravatar['hide'] = option.avatar === 'hide' ? !0 : !1;
 
+            // init av
             let av = option.av || AV;
             let appId = option.app_id || option.appId;
             let appKey = option.app_key || option.appKey;
@@ -538,7 +542,7 @@ class Hitalk {
                 atData['at'] = at;
                 atData['rmail'] = rmail;
                 defaultComment['rid'] = rid;
-                inputs['comment'].value = `${at} ，`;
+                inputs['comment'].value = `${at} `;
                 inputs['comment'].focus();
             })
         }
