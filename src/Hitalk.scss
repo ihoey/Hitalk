@@ -1,17 +1,16 @@
-/**
- * @Hitalk
- * Author: ihoey
- * Github: https://github.com/ihoey/Hitalk
- * Website: https://Hitalk.js.org
+/*
+ * @Author: ihoey 
+ * @Date: 2018-04-22 21:12:45 
+ * @Last Modified by:   ihoey 
+ * @Last Modified time: 2018-04-22 21:12:45 
  */
 
 .Hitalk {
+    box-sizing: border-box;
+    transition: all .3s ease;
     * {
-        box-sizing: border-box; //font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", 微软雅黑, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", Arial, sans-serif;
-        //font-size: 16px;
-        line-height: 1.42857143;
-        color: #555;
-        transition: all .3s ease;
+        box-sizing: inherit;
+        transition: inherit;
     }
     .vinput {
         border: none;
@@ -24,8 +23,7 @@
     .vwrap {
         border: 1px solid #f0f0f0;
         border-radius: 4px;
-        margin-bottom: 10px;
-        overflow: hidden;
+        margin-bottom: 10px; // overflow: hidden;
         position: relative;
         padding: 10px;
         input {
@@ -224,7 +222,7 @@
                 border-radius: 50%;
                 margin-right: .7525rem;
                 transition: all .5s;
-                &:hover{
+                &:hover {
                     transform: rotate(720deg);
                 }
             }
@@ -411,3 +409,5 @@
         }
     }
 }
+
+@import './smilies.scss';
