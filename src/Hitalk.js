@@ -2,7 +2,7 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-21 12:27:44
+ * @Last Modified time: 2018-04-23 00:21:26
  */
 
 import md5 from 'blueimp-md5';
@@ -26,6 +26,17 @@ const defaultComment = {
     like: 0
 };
 const GUEST_INFO = ['nick', 'mail', 'link'];
+
+const smiliesData = {
+    '泡泡': `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
+    '阿鲁': `高兴|小怒|脸红|内伤|装大款|赞一个|害羞|汗|吐血倒地|深思|不高兴|无语|亲亲|口水|尴尬|中指|想一想|哭泣|便便|献花|皱眉|傻笑|狂汗|吐|喷水|看不见|鼓掌|阴暗|长草|献黄瓜|邪恶|期待|得意|吐舌|喷血|无所谓|观察|暗地观察|肿包|中枪|大囧|呲牙|抠鼻|不说话|咽气|欢呼|锁眉|蜡烛|坐等|击掌|惊喜|喜极而泣|抽烟|不出所料|愤怒|无奈|黑线|投降|看热闹|扇耳光|小眼睛|中刀`
+}
+const pReg = new RegExp("\\@\\(\\s*(" + smiliesData.泡泡 + "\)\\s*\\)")
+const aReg = new RegExp("\\#\\(\\s*(" + smiliesData.阿鲁 + "\)\\s*\\)")
+var subfix = "";
+if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
+    subfix = "@2x";
+}
 
 const store = localStorage;
 class Hitalk {
@@ -77,7 +88,7 @@ class Hitalk {
                         break;
                 }
             });
-            
+
             // 填充元素
             let placeholder = option.placeholder || '';
             let eleHTML = `
@@ -87,7 +98,11 @@ class Hitalk {
                     <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
                 </div>
                 <div class="vcontrol">
-                    <div class="col col-60" title="MarkDown is Support">MarkDown is Support</div>
+                    <span class="col col-60 smilies">
+                        <div class="col smilies-logo"><span>^_^</span></div>
+                        <div class="col" title="Markdown is Support">MarkDown is Support</div>
+                        <div class="smilies-body"></div>
+                    </span>
                     <div class="col col-40 text-right">
                         <button type="button" class="vsubmit vbtn">回复</button>
                     </div>
@@ -102,6 +117,56 @@ class Hitalk {
             <ul class="vlist"></ul>
             <div class="vpage txt-center"></div>`;
             _root.el.innerHTML = eleHTML;
+
+            // 填充表情节点
+            let smiliesNode = _root.el.querySelector('.smilies-body');
+            let ulNode, liNode = '';
+            let fragment = document.createDocumentFragment();
+            Object.keys(smiliesData).forEach((y, i) => {
+                ulNode = document.createElement("ul");
+                ulNode.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == '泡泡' ? ' smilies-items-show' : ''))
+                ulNode.setAttribute('data-id', i)
+                smiliesData[y].split('|').forEach(e => {
+                    ulNode.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == '泡泡' ? '@' : '#') + `(${e})`}"><img class="biaoqing ${y == '泡泡' ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${y == '泡泡' ? 'newpaopao' : 'alu'}/${e + subfix}.png"></li>`
+                })
+                liNode += `<li class="smilies-name ${y == '泡泡' ? 'smilies-package-active' : ''}" data-id="${i}"><span>${y}</span></li>`
+                fragment.appendChild(ulNode);
+            })
+            let divNode = document.createElement("div");
+            divNode.setAttribute('class', 'smilies-bar')
+            divNode.innerHTML = `<ul class="smilies-packages">${liNode}</ul>`
+            fragment.appendChild(divNode);
+            smiliesNode.appendChild(fragment);
+
+            let smilies = document.querySelector('.smilies')
+            let _el = document.querySelector('.veditor')
+
+            Event.on('click', smilies, e => {
+                e = e.target
+                if (e.className == 'smilies-item') {
+                    _el.value += ` ${e.getAttribute('data-input')} `
+                    defaultComment.comment = _el.value
+                    smilies.classList.remove('smilies-open')
+                } else if (e.classList.contains('smilies-logo')) {
+                    smilies.classList.toggle('smilies-open')
+                } else if (e.classList.contains('smilies-name')) {
+                    if (!e.classList.contains('smilies-package-active')) {
+                        document.querySelectorAll('.smilies-name').forEach(e => e.classList.remove('smilies-package-active'))
+                        document.querySelectorAll('.smilies-items').forEach(e => e.classList.remove('smilies-items-show'))
+                        document.querySelectorAll('.smilies-items')[e.getAttribute('data-id')].classList.add('smilies-items-show')
+                        e.classList.add('smilies-package-active')
+
+                    }
+                }
+            })
+
+            Event.on('mouseup', document, e => {
+                e = e.target
+                let _con = document.querySelector('.smilies')
+                if (!_con === e || !_con.contains(e)) {
+                    smilies.classList.remove('smilies-open')
+                }
+            })
 
             // Empty Data
             let vempty = _root.el.querySelector('.vempty');
@@ -156,6 +221,7 @@ class Hitalk {
             defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
 
         } catch (ex) {
+            console.log(ex);
             let issue = 'https://github.com/ihoey/Hitalk/issues';
             if (_root.el) _root.nodata.show(`<pre style="color:red;text-align:left;">${ex}<br>Hitalk:<b>${_root.version}</b><br>反馈：${issue}</pre>`);
             else console && console.log(`%c${ex}\n%cHitalk%c${_root.version} ${issue}`, 'color:red;', 'background:#000;padding:5px;line-height:30px;color:#fff;', 'background:#456;line-height:30px;padding:5px;color:#fff;');
@@ -219,12 +285,26 @@ class Hitalk {
             }
         }
 
-        let commonQuery = (cb) => {
+        let commonQuery = (url) => {
             let query = new _root.v.Query('Comment');
-            query.equalTo('url', defaultComment['url']);
+            query.equalTo('url', url || defaultComment['url']);
             query.descending('createdAt');
             return query;
         }
+
+        var pageCount = document.querySelectorAll(".hitalk-comment-count");
+        for (let i = 0; i < pageCount.length; i++) {
+            let el = pageCount[i];
+            let url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '');
+            let cq = commonQuery(url);
+            cq.find().then(res => {
+                el.innerText = res.length;
+            }).catch(ex => {
+                //err(ex)
+                el.innerText = 0;
+            })
+        }
+
         let query = (pageNo = 1) => {
             _root.loading.show();
             let cq = commonQuery();
@@ -339,8 +419,6 @@ class Hitalk {
         // submit
         let submitBtn = _root.el.querySelector('.vsubmit');
         let submitEvt = (e) => {
-            // console.log(defaultComment)
-            // return;
             if (submitBtn.getAttribute('disabled')) {
                 _root.alert.show({
                     type: 0,
@@ -361,6 +439,15 @@ class Hitalk {
                 let at = `<a class="at" href='#${defaultComment.rid}'>${atData.at}</a>`;
                 defaultComment.comment = defaultComment.comment.replace(atData.at, at);
             }
+            //表情
+            var matched;
+            while (matched = defaultComment.comment.match(pReg)) {
+                defaultComment.comment = defaultComment.comment.replace(matched[0], `<img src="https://cdn.dode.top/newpaopao/${matched[1] + subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`);
+            }
+            while (matched = defaultComment.comment.match(aReg)) {
+                defaultComment.comment = defaultComment.comment.replace(matched[0], `<img src="https://cdn.dode.top/alu/${matched[1] + subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`);
+            }
+
             // veirfy
             let mailRet = check.mail(defaultComment.mail);
             let linkRet = check.link(defaultComment.link);
@@ -554,24 +641,6 @@ class Hitalk {
     }
 
 }
-// const loadAV = (cb) => {
-//     let avjs = document.createElement('script');　　　
-//     let _doc = document.querySelector('head');　
-//     avjs.type = 'text/javascript';　　　　
-//     avjs.async = 'async';　　　　
-//     avjs.src = '//cdn1.lncld.net/static/js/3.0.4/av-min.js';　　　　
-//     _doc.appendChild(avjs);　　　　
-//     if (avjs.readyState) { //IE　　　　　　
-//         avjs.onreadystatechange = function() {　　　　　　　　
-//             if (avjs.readyState == 'complete' || avjs.readyState == 'loaded') {　　　　　　　　　　
-//                 avjs.onreadystatechange = null;　　　　　　　　　　
-//                 cb && cb();　　　　　　　　
-//             }　　　　　　
-//         }　　　　
-//     } else { //非IE　　　　　　
-//         avjs.onload = function() { cb && cb(); }　　　　
-//     }
-// }
 
 const Event = {
     on(type, el, handler, capture) {
@@ -583,25 +652,8 @@ const Event = {
         if (el.removeEventListener) el.removeEventListener(type, handler, capture || false);
         else if (el.detachEvent) el.detachEvent(`on${type}`, handler);
         else el[`on${type}`] = null;
-    },
-    // getEvent(e) {
-    //     return e || window.event;
-    // },
-    // getTarget(e) {
-    //     return e.target || e.srcElement;
-    // },
-    // preventDefault(e) {
-    //     e = e || window.event;
-    //     e.preventDefault && e.preventDefault() || (e.returnValue = false);
-    // },
-    // stopPropagation(e) {
-    //     e = e || window.event;
-    //     e.stopPropagation && e.stopPropagation() || (e.cancelBubble = !0);
-    // }
+    }
 }
-
-
-
 
 const getLink = (target) => {
     return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);';
