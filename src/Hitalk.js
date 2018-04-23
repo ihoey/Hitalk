@@ -2,7 +2,7 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-23 00:21:26
+ * @Last Modified time: 2018-04-23 18:23:04
  */
 
 import md5 from 'blueimp-md5';
@@ -145,7 +145,9 @@ class Hitalk {
                 e = e.target
                 if (e.className == 'smilies-item') {
                     _el.value += ` ${e.getAttribute('data-input')} `
-                    defaultComment.comment = _el.value
+                    defaultComment.comment = marked(_el.value, {
+                        sanitize: !0
+                    })
                     smilies.classList.remove('smilies-open')
                 } else if (e.classList.contains('smilies-logo')) {
                     smilies.classList.toggle('smilies-open')
