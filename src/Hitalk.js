@@ -2,7 +2,7 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-23 18:23:04
+ * @Last Modified time: 2018-04-25 22:51:57
  */
 
 import md5 from 'blueimp-md5';
@@ -117,58 +117,6 @@ class Hitalk {
             <ul class="vlist"></ul>
             <div class="vpage txt-center"></div>`;
             _root.el.innerHTML = eleHTML;
-
-            // 填充表情节点
-            let smiliesNode = _root.el.querySelector('.smilies-body');
-            let ulNode, liNode = '';
-            let fragment = document.createDocumentFragment();
-            Object.keys(smiliesData).forEach((y, i) => {
-                ulNode = document.createElement("ul");
-                ulNode.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == '泡泡' ? ' smilies-items-show' : ''))
-                ulNode.setAttribute('data-id', i)
-                smiliesData[y].split('|').forEach(e => {
-                    ulNode.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == '泡泡' ? '@' : '#') + `(${e})`}"><img class="biaoqing ${y == '泡泡' ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${y == '泡泡' ? 'newpaopao' : 'alu'}/${e + subfix}.png"></li>`
-                })
-                liNode += `<li class="smilies-name ${y == '泡泡' ? 'smilies-package-active' : ''}" data-id="${i}"><span>${y}</span></li>`
-                fragment.appendChild(ulNode);
-            })
-            let divNode = document.createElement("div");
-            divNode.setAttribute('class', 'smilies-bar')
-            divNode.innerHTML = `<ul class="smilies-packages">${liNode}</ul>`
-            fragment.appendChild(divNode);
-            smiliesNode.appendChild(fragment);
-
-            let smilies = document.querySelector('.smilies')
-            let _el = document.querySelector('.veditor')
-
-            Event.on('click', smilies, e => {
-                e = e.target
-                if (e.className == 'smilies-item') {
-                    _el.value += ` ${e.getAttribute('data-input')} `
-                    defaultComment.comment = marked(_el.value, {
-                        sanitize: !0
-                    })
-                    smilies.classList.remove('smilies-open')
-                } else if (e.classList.contains('smilies-logo')) {
-                    smilies.classList.toggle('smilies-open')
-                } else if (e.classList.contains('smilies-name')) {
-                    if (!e.classList.contains('smilies-package-active')) {
-                        document.querySelectorAll('.smilies-name').forEach(e => e.classList.remove('smilies-package-active'))
-                        document.querySelectorAll('.smilies-items').forEach(e => e.classList.remove('smilies-items-show'))
-                        document.querySelectorAll('.smilies-items')[e.getAttribute('data-id')].classList.add('smilies-items-show')
-                        e.classList.add('smilies-package-active')
-
-                    }
-                }
-            })
-
-            Event.on('mouseup', document, e => {
-                e = e.target
-                let _con = document.querySelector('.smilies')
-                if (!_con === e || !_con.contains(e)) {
-                    smilies.classList.remove('smilies-open')
-                }
-            })
 
             // Empty Data
             let vempty = _root.el.querySelector('.vempty');
@@ -357,6 +305,66 @@ class Hitalk {
             bindAtEvt(_vat);
 
         }
+
+        // 填充表情节点
+        let addSmilies = () => {
+            let _smilies = _root.el.querySelector('.smilies-body');
+            let _ul, _li = '';
+            let fragment = document.createDocumentFragment();
+            const sl = '泡泡'
+            Object.keys(smiliesData).forEach((y, i) => {
+                _ul = document.createElement("ul");
+                _ul.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == sl ? ' smilies-items-show' : ''))
+                _ul.setAttribute('data-id', i)
+                smiliesData[y].split('|').forEach(e => {
+                    _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') + `(${e})`}">
+                    <img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${y == sl ? 'newpaopao' : 'alu'}/${e + subfix}.png">
+                    </li>`
+                })
+                _li += `<li class="smilies-name ${y == sl ? 'smilies-package-active' : ''}" data-id="${i}"><span>${y}</span></li>`
+                fragment.appendChild(_ul); //添加ul
+            })
+            let _div = document.createElement("div");
+            _div.setAttribute('class', 'smilies-bar')
+            _div.innerHTML = `<ul class="smilies-packages">${_li}</ul>`
+            fragment.appendChild(_div); //再次添加div
+            _smilies.appendChild(fragment);
+
+            let smilies = document.querySelector('.smilies')
+            let _el = document.querySelector('.veditor')
+
+            Event.on('click', smilies, e => {
+                e = e.target
+                if (e.className == 'smilies-item') {
+                    _el.value += ` ${e.getAttribute('data-input')} `
+                    defaultComment.comment = marked(_el.value, {
+                        sanitize: !0
+                    })
+                    smilies.classList.remove('smilies-open')
+                } else if (e.classList.contains('smilies-logo')) {
+                    smilies.classList.toggle('smilies-open')
+                } else if (e.classList.contains('smilies-name')) {
+                    if (!e.classList.contains('smilies-package-active')) {
+                        document.querySelectorAll('.smilies-name').forEach(e => e.classList.remove('smilies-package-active'))
+                        document.querySelectorAll('.smilies-items').forEach(e => e.classList.remove('smilies-items-show'))
+                        document.querySelectorAll('.smilies-items')[e.getAttribute('data-id')].classList.add('smilies-items-show')
+                        e.classList.add('smilies-package-active')
+
+                    }
+                }
+            })
+
+            Event.on('mouseup', document, e => {
+                e = e.target
+                let _con = document.querySelector('.smilies')
+                if (!_con === e || !_con.contains(e)) {
+                    smilies.classList.remove('smilies-open')
+                }
+            })
+
+        };
+
+        setTimeout(addSmilies, 0);
 
         let mapping = {
             veditor: "comment"
