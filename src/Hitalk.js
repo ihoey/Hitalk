@@ -2,14 +2,14 @@
  * @Author: ihoey 
  * @Date: 2018-04-20 23:53:17 
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-25 22:51:57
+ * @Last Modified time: 2018-04-28 11:45:24
  */
 
 import md5 from 'blueimp-md5';
 import marked from 'marked';
 import detect from './detect';
 const gravatar = {
-    cdn: 'https://gravatar.cat.net/avatar/',
+    cdn: 'https://gravatar.loli.net/avatar/',
     ds: ['mm', 'identicon', 'monsterid', 'wavatar', 'retro', ''],
     params: '?s=40',
     hide: !1
@@ -62,6 +62,26 @@ class Hitalk {
     init(option) {
         let _root = this;
         try {
+            // init av
+            let av = option.av || AV;
+            let appId = option.app_id || option.appId;
+            let appKey = option.app_key || option.appKey;
+            if (!appId || !appKey) {
+                _root.loading.hide();
+                throw '初始化失败，请检查你的appid或者appkey.';
+                return;
+            }
+            av.applicationId = null;
+            av.init({
+                appId: appId,
+                appKey: appKey
+            });
+            _root.v = av;
+            defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
+            
+            //评论数
+            _root.initCount()
+
             // get el
             let el = ({}).toString.call(option.el) === "[object HTMLDivElement]" ? option.el : document.querySelectorAll(option.el)[0];
             if (({}).toString.call(el) != '[object HTMLDivElement]') {
@@ -152,24 +172,6 @@ class Hitalk {
 
             gravatar['params'] = '?d=' + (gravatar['ds'].indexOf(option.avatar) > -1 ? option.avatar : 'mm');
             gravatar['hide'] = option.avatar === 'hide' ? !0 : !1;
-
-            // init av
-            let av = option.av || AV;
-            let appId = option.app_id || option.appId;
-            let appKey = option.app_key || option.appKey;
-            if (!appId || !appKey) {
-                _root.loading.hide();
-                throw '初始化失败，请检查你的appid或者appkey.';
-                return;
-            }
-            av.applicationId = null;
-            av.init({
-                appId: appId,
-                appKey: appKey
-            });
-            _root.v = av;
-            defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
-
         } catch (ex) {
             console.log(ex);
             let issue = 'https://github.com/ihoey/Hitalk/issues';
@@ -219,6 +221,27 @@ class Hitalk {
         _root.bind(option);
     }
 
+    commonQuery(url) {
+        let query = new this.v.Query('Comment');
+        query.equalTo('url', url || defaultComment['url']);
+        query.descending('createdAt');
+        return query;
+    }
+
+    initCount() {
+        var pageCount = document.querySelectorAll(".hitalk-comment-count");
+        for (let i = 0; i < pageCount.length; i++) {
+            let el = pageCount[i];
+            let url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '');
+            let cq = this.commonQuery(url);
+            cq.find().then(res => {
+                el.innerText = res.length;
+            }).catch(ex => {
+                //err(ex)
+                el.innerText = 0;
+            })
+        }
+    }
     /**
      * Bind Event
      */
@@ -235,29 +258,9 @@ class Hitalk {
             }
         }
 
-        let commonQuery = (url) => {
-            let query = new _root.v.Query('Comment');
-            query.equalTo('url', url || defaultComment['url']);
-            query.descending('createdAt');
-            return query;
-        }
-
-        var pageCount = document.querySelectorAll(".hitalk-comment-count");
-        for (let i = 0; i < pageCount.length; i++) {
-            let el = pageCount[i];
-            let url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '');
-            let cq = commonQuery(url);
-            cq.find().then(res => {
-                el.innerText = res.length;
-            }).catch(ex => {
-                //err(ex)
-                el.innerText = 0;
-            })
-        }
-
         let query = (pageNo = 1) => {
             _root.loading.show();
-            let cq = commonQuery();
+            let cq = _root.commonQuery();
             cq.limit('1000');
             cq.find().then(rets => {
                 let len = rets.length;
