@@ -167,7 +167,8 @@
         width: 100%;
         height: 8.75rem;
         font-size: .875rem;
-        background: transparent;
+        border-bottom: 1px dashed #dedede;
+        background: url(https://cdn.dode.top/plbj.png) right bottom no-repeat;
     }
     .vbtn {
         transition-duration: .4s;
@@ -221,9 +222,9 @@
                 float: left;
                 border-radius: 50%;
                 margin-right: .7525rem;
-                transition: all .5s;
+                transition: all 1s;
                 &:hover {
-                    transform: rotate(720deg);
+                    transform: rotate(720deg) scale(1.2);
                 }
             }
             .vhead {
