@@ -1,8 +1,8 @@
 /*
- * @Author: ihoey 
- * @Date: 2018-04-22 21:12:45 
- * @Last Modified by:   ihoey 
- * @Last Modified time: 2018-04-22 21:12:45 
+ * @Author: ihoey
+ * @Date: 2018-04-22 21:12:45
+ * @Last Modified by: ihoey
+ * @Last Modified time: 2018-05-03 12:05:48
  */
 
 .Hitalk {
@@ -93,16 +93,16 @@
                     color: #fff;
                     padding: 1rem 0;
                 }
-                .vcode {
-                    width: 4.6875rem;
-                    border-radius: .3125rem;
-                    padding: .5rem;
-                    background: #dedede;
-                    &:focus {
-                        border-color: #3090e4;
-                        background-color: #fff;
-                    }
-                }
+                // .vcode {
+                //     width: 4.6875rem;
+                //     border-radius: .3125rem;
+                //     padding: .5rem;
+                //     background: #dedede;
+                //     &:focus {
+                //         border-color: #3090e4;
+                //         background-color: #fff;
+                //     }
+                // }
             }
             @media screen and(max-width:720px) {
                 .valert {
@@ -115,13 +115,13 @@
             }
         }
     }
-    .power {
-        color: #999;
-        font-size: .75rem;
-        a {
-            font-size: .75rem;
-        }
-    }
+    // .power {
+    //     color: #999;
+    //     font-size: .75rem;
+    //     a {
+    //         font-size: .75rem;
+    //     }
+    // }
     .info {
         font-size: 0;
         padding: 5px;
@@ -285,18 +285,18 @@
                         color: #D7191A;
                     }
                 }
-                pre,
-                .code,
-                code {
-                    overflow: auto;
-                    padding: 2px 6px;
-                    word-wrap: break-word;
-                    color: #555;
-                    background: #f5f2f2;
-                    border-radius: 3px;
-                    font-size: .875rem;
-                    margin: 5px 0;
-                }
+                // pre,
+                // .code,
+                // code {
+                //     overflow: auto;
+                //     padding: 2px 6px;
+                //     word-wrap: break-word;
+                //     color: #555;
+                //     background: #f5f2f2;
+                //     border-radius: 3px;
+                //     font-size: .875rem;
+                //     margin: 5px 0;
+                // }
                 &.expand {
                     cursor: pointer;
                     max-height: 11.25rem;
