@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-05-03 11:53:57
+ * @Last Modified time: 2018-05-03 16:35:55
  */
 
 import md5 from 'blueimp-md5';
@@ -341,7 +341,8 @@ class Hitalk {
                 if (e.className == 'smilies-item') {
                     _el.value += ` ${e.getAttribute('data-input')} `
                     defaultComment.comment = marked(_el.value, {
-                        sanitize: !0
+                        sanitize: !0,
+                        breaks: !0
                     })
                     smilies.classList.remove('smilies-open')
                 } else if (e.classList.contains('smilies-logo')) {
@@ -384,7 +385,8 @@ class Hitalk {
                 inputs[_v] = _el;
                 Event.on('input', _el, (e) => {
                     defaultComment[_v] = _v === 'comment' ? marked(_el.value, {
-                        sanitize: !0
+                        sanitize: !0,
+                        breaks: !0
                     }) : HtmlUtil.encode(_el.value);
                 });
             }
@@ -474,7 +476,7 @@ class Hitalk {
                         // if (_root.notify || _root.verify) {
                         //     verifyEvt(commitEvt)
                         // } else {
-                            commitEvt();
+                        commitEvt();
                         // }
                     }
                 })
@@ -484,9 +486,9 @@ class Hitalk {
                     text: '您的邮箱格式不正确, 是否继续提交?',
                     cb() {
                         // if (_root.notify || _root.verify) {
-                            // verifyEvt(commitEvt)
+                        // verifyEvt(commitEvt)
                         // } else {
-                            commitEvt();
+                        commitEvt();
                         // }
                     }
                 })
@@ -496,9 +498,9 @@ class Hitalk {
                     text: '您的网址格式不正确, 是否继续提交?',
                     cb() {
                         // if (_root.notify || _root.verify) {
-                            // verifyEvt(commitEvt)
+                        // verifyEvt(commitEvt)
                         // } else {
-                            commitEvt();
+                        commitEvt();
                         // }
                     }
                 })
@@ -506,7 +508,7 @@ class Hitalk {
                 // if (_root.notify || _root.verify) {
                 //     verifyEvt(commitEvt)
                 // } else {
-                    commitEvt();
+                commitEvt();
                 // }
             }
         }
