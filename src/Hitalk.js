@@ -1,8 +1,8 @@
 ﻿/*
- * @Author: ihoey 
- * @Date: 2018-04-20 23:53:17 
+ * @Author: ihoey
+ * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-04-28 11:45:24
+ * @Last Modified time: 2018-05-03 11:53:57
  */
 
 import md5 from 'blueimp-md5';
@@ -78,7 +78,7 @@ class Hitalk {
             });
             _root.v = av;
             defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
-            
+
             //评论数
             _root.initCount()
 
@@ -98,7 +98,7 @@ class Hitalk {
                         return '<input name="nick" placeholder="称呼" class="vnick vinput" type="text">';
                         break;
                     case 'mail':
-                        return '<input name="mail" placeholder="邮箱" class="vmail vinput" type="email">';
+                        return '<input name="mail" placeholder="邮箱(会收到提醒哦~)" class="vmail vinput" type="email">';
                         break;
                     case 'link':
                         return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">';
@@ -167,8 +167,8 @@ class Hitalk {
             };
             //_root.nodata.show();
 
-            _root.notify = option.notify || !1;
-            _root.verify = option.verify || !1;
+            // _root.notify = option.notify || !1;
+            // _root.verify = option.verify || !1;
 
             gravatar['params'] = '?d=' + (gravatar['ds'].indexOf(option.avatar) > -1 ? option.avatar : 'mm');
             gravatar['hide'] = option.avatar === 'hide' ? !0 : !1;
@@ -471,11 +471,11 @@ class Hitalk {
                     type: 1,
                     text: '您的网址和邮箱格式不正确, 是否继续提交?',
                     cb() {
-                        if (_root.notify || _root.verify) {
-                            verifyEvt(commitEvt)
-                        } else {
+                        // if (_root.notify || _root.verify) {
+                        //     verifyEvt(commitEvt)
+                        // } else {
                             commitEvt();
-                        }
+                        // }
                     }
                 })
             } else if (!mailRet.k && guest_info.indexOf('mail') > -1) {
@@ -483,11 +483,11 @@ class Hitalk {
                     type: 1,
                     text: '您的邮箱格式不正确, 是否继续提交?',
                     cb() {
-                        if (_root.notify || _root.verify) {
-                            verifyEvt(commitEvt)
-                        } else {
+                        // if (_root.notify || _root.verify) {
+                            // verifyEvt(commitEvt)
+                        // } else {
                             commitEvt();
-                        }
+                        // }
                     }
                 })
             } else if (!linkRet.k && guest_info.indexOf('link') > -1) {
@@ -495,19 +495,19 @@ class Hitalk {
                     type: 1,
                     text: '您的网址格式不正确, 是否继续提交?',
                     cb() {
-                        if (_root.notify || _root.verify) {
-                            verifyEvt(commitEvt)
-                        } else {
+                        // if (_root.notify || _root.verify) {
+                            // verifyEvt(commitEvt)
+                        // } else {
                             commitEvt();
-                        }
+                        // }
                     }
                 })
             } else {
-                if (_root.notify || _root.verify) {
-                    verifyEvt(commitEvt)
-                } else {
+                // if (_root.notify || _root.verify) {
+                //     verifyEvt(commitEvt)
+                // } else {
                     commitEvt();
-                }
+                // }
             }
         }
 
@@ -556,10 +556,10 @@ class Hitalk {
                         mail: defaultComment['mail']
                     });
 
-                    atData['at'] && atData['rmail'] && _root.notify && mailEvt({
-                        username: atData['at'].replace('@', ''),
-                        mail: atData['rmail']
-                    });
+                    // atData['at'] && atData['rmail'] && _root.notify && mailEvt({
+                    //     username: atData['at'].replace('@', ''),
+                    //     mail: atData['rmail']
+                    // });
                     submitBtn.removeAttribute('disabled');
                     _root.loading.hide();
                     reset();
@@ -571,40 +571,40 @@ class Hitalk {
             })
         }
 
-        let verifyEvt = (fn) => {
-            let x = Math.floor((Math.random() * 10) + 1);
-            let y = Math.floor((Math.random() * 10) + 1);
-            let z = Math.floor((Math.random() * 10) + 1);
-            let opt = ['+', '-', 'x'];
-            let o1 = opt[Math.floor(Math.random() * 3)];
-            let o2 = opt[Math.floor(Math.random() * 3)];
-            let expre = `${x}${o1}${y}${o2}${z}`;
-            let subject = `${expre} = <input class='vcode vinput' >`;
-            _root.alert.show({
-                type: 1,
-                text: subject,
-                ctxt: '取消',
-                otxt: '确认',
-                cb() {
-                    let code = +_root.el.querySelector('.vcode').value;
-                    let ret = (new Function(`return ${expre.replace(/x/g, '*')}`))();
-                    if (ret === code) {
-                        fn && fn();
-                    } else {
-                        _root.alert.show({
-                            type: 1,
-                            text: '(T＿T)这么简单都算错，也是没谁了',
-                            ctxt: '伤心了，不回了',
-                            otxt: '再试试?',
-                            cb() {
-                                verifyEvt(fn);
-                                return;
-                            }
-                        })
-                    }
-                }
-            })
-        }
+        // let verifyEvt = (fn) => {
+        //     let x = Math.floor((Math.random() * 10) + 1);
+        //     let y = Math.floor((Math.random() * 10) + 1);
+        //     let z = Math.floor((Math.random() * 10) + 1);
+        //     let opt = ['+', '-', 'x'];
+        //     let o1 = opt[Math.floor(Math.random() * 3)];
+        //     let o2 = opt[Math.floor(Math.random() * 3)];
+        //     let expre = `${x}${o1}${y}${o2}${z}`;
+        //     let subject = `${expre} = <input class='vcode vinput' >`;
+        //     _root.alert.show({
+        //         type: 1,
+        //         text: subject,
+        //         ctxt: '取消',
+        //         otxt: '确认',
+        //         cb() {
+        //             let code = +_root.el.querySelector('.vcode').value;
+        //             let ret = (new Function(`return ${expre.replace(/x/g, '*')}`))();
+        //             if (ret === code) {
+        //                 fn && fn();
+        //             } else {
+        //                 _root.alert.show({
+        //                     type: 1,
+        //                     text: '(T＿T)这么简单都算错，也是没谁了',
+        //                     ctxt: '伤心了，不回了',
+        //                     otxt: '再试试?',
+        //                     cb() {
+        //                         verifyEvt(fn);
+        //                         return;
+        //                     }
+        //                 })
+        //             }
+        //         }
+        //     })
+        // }
 
         let signUp = (o) => {
             let u = new _root.v.User();
@@ -615,23 +615,23 @@ class Hitalk {
             return u.signUp();
         }
 
-        let mailEvt = (o) => {
-            _root.v.User.requestPasswordReset(o.mail).then(ret => {}).catch(e => {
-                if (e.code == 1) {
-                    _root.alert.show({
-                        type: 0,
-                        text: `ヾ(ｏ･ω･)ﾉ At太频繁啦，提醒功能暂时宕机。<br>${e.error}`,
-                        ctxt: '好的'
-                    })
-                } else {
-                    signUp(o).then(ret => {
-                        mailEvt(o);
-                    }).catch(x => {
-                        //err(x)
-                    })
-                }
-            })
-        }
+        // let mailEvt = (o) => {
+        //     _root.v.User.requestPasswordReset(o.mail).then(ret => {}).catch(e => {
+        //         if (e.code == 1) {
+        //             _root.alert.show({
+        //                 type: 0,
+        //                 text: `ヾ(ｏ･ω･)ﾉ At太频繁啦，提醒功能暂时宕机。<br>${e.error}`,
+        //                 ctxt: '好的'
+        //             })
+        //         } else {
+        //             signUp(o).then(ret => {
+        //                 mailEvt(o);
+        //             }).catch(x => {
+        //                 //err(x)
+        //             })
+        //         }
+        //     })
+        // }
 
         // at event
         let bindAtEvt = (el) => {
