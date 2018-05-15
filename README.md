@@ -33,7 +33,7 @@ https://sponsor.ihoey.com/
 <head>
     ...
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src='//cdn.dode.top/Hitalk.min.js'></script>
     ...
 </head>
 <body>
@@ -44,7 +44,7 @@ https://sponsor.ihoey.com/
 
 ### 获取appid和appkey
 
-请先登录或注册 (LeanCloud)[https://leancloud.cn/], 进入控制台后点击左下角创建应用：
+请先登录或注册 [LeanCloud](https://leancloud.cn/), 进入控制台后点击左下角创建应用：
 
 应用创建好以后，进入刚刚创建的应用，选择左下角的设置>应用`Key`，然后就能看到你的`appid`和`appkey`了：
 
