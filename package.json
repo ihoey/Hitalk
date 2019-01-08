@@ -6,8 +6,7 @@
   "autoupdate": {
     "source": "git",
     "target": "git://github.com/ihoey/Hitalk.git",
-    "fileMap": [
-      {
+    "fileMap": [{
         "basePath": "dist",
         "files": [
           "Hitalk*.+(js|map|css)"
@@ -39,7 +38,7 @@
     "style-loader": "^0.18.2",
     "url-loader": "^0.6.2",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^3.1.11"
   },
   "scripts": {
     "test": "webpack",
