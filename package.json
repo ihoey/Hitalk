@@ -42,10 +42,9 @@
     "webpack-dev-server": "^3.1.11"
   },
   "scripts": {
-    "test": "webpack",
-    "build": "webpack",
-    "dev": "webpack-dev-server --env.dev",
-    "clear": "rm -rf dist/* "
+    "build": "rm -rf dist/* && webpack --mode production",
+    "dev": "webpack-dev-server --mode development",
+    "start": "webpack-dev-server --mode development"
   },
   "repository": {
     "type": "git",

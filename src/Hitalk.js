@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-27 18:46:38
+ * @Last Modified time: 2019-03-27 19:30:54
  */
 
 import md5 from 'blueimp-md5';
@@ -110,7 +110,7 @@ class Hitalk {
       let placeholder = option.placeholder || '';
       let eleHTML = `
             <div class="vwrap">
-                <div class="welcome">欢迎回来，{name}！<span class="info-edit">修改</span></div>
+                <div class="welcome" style="display:none;">欢迎回来，{name}！<span class="info-edit">修改</span></div>
                 <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
                 <div class="vedit">
                     <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
@@ -451,6 +451,7 @@ class Hitalk {
           defaultComment[k] = s[k];
         }
         const welcome = _root.el.querySelector(`.welcome`).innerHTML;
+        _root.el.querySelector(`.welcome`).removeAttribute('style');
         _root.el.querySelector(`.welcome`).innerHTML = welcome.replace('{name}', s["nick"]);
         _root.el.querySelector(`.vheader`).classList.add('hide');
         Event.on('click', _root.el.querySelector(`.welcome .info-edit`), (e) => {
