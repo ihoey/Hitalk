@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-27 15:23:41
+ * @Last Modified time: 2019-03-27 17:43:15
  */
 
 import md5 from 'blueimp-md5';
@@ -23,7 +23,8 @@ const defaultComment = {
   ua: navigator.userAgent,
   url: '',
   pin: 0,
-  like: 0
+  like: 0,
+  page: 0
 };
 const GUEST_INFO = ['nick', 'mail', 'link'];
 
@@ -77,6 +78,7 @@ class Hitalk {
       });
       _root.v = av;
       defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
+      defaultComment.pageSize = option.pageSize || 10;
 
       //评论数
       _root.initCount()
@@ -130,7 +132,7 @@ class Hitalk {
             <div class="vloading"></div>
             <div class="vempty" style="display:none;"></div>
             <ul class="vlist"></ul>
-            <div class="vpage txt-center"></div>`;
+            <div class="vpage txt-right"></div>`;
       _root.el.innerHTML = eleHTML;
 
       // Empty Data
@@ -233,7 +235,7 @@ class Hitalk {
 
     const cq = new this.v.Query.or(...vArr);
     cq.select('url').limit(1000).find().then(res => {
-      urlArr.map((e, i) => pCount[i].innerText = res.filter(x => e === x.get("url")).length + 1)
+      urlArr.map((e, i) => pCount[i].innerText = res.filter(x => e === x.get("url")).length)
     }).catch(ex => {
       throw ex;
     })
@@ -254,25 +256,74 @@ class Hitalk {
       }
     }
 
-    let query = (pageNo = 1) => {
+    let query = () => {
       _root.loading.show();
       let cq = _root.commonQuery();
-      cq.limit(1000).find().then(rets => {
+      cq.limit(defaultComment.pageSize).skip(defaultComment.page * defaultComment.pageSize).find().then(rets => {
         let len = rets.length;
         if (len) {
           _root.el.querySelector('.vlist').innerHTML = '';
           for (let i = 0; i < len; i++) {
             insertDom(rets[i], !0)
           }
-          _root.el.querySelector('.count').innerHTML = `评论(<span class="num">${len + 1}</span>)`;
+          let countDom = _root.el.querySelector('.count').innerText;
+          if (!countDom) {
+            cq.count().then(len => {
+              const pageCount = len / defaultComment.pageSize
+              _root.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`;
+              let vpageDom = `<span class="prev page-numbers" style="display:none;">&lt;</span>`;
+              for (let index = 1; index < pageCount; index++) {
+                vpageDom += `<span class="page-numbers numbers ${index == 1 ? 'current' : ''}">${index}</span>`;
+              }
+              vpageDom += `<span class="next page-numbers">&gt;</span>`;
+              _root.el.querySelector('.vpage').innerHTML = vpageDom;
+              Event.on('click', _root.el.querySelector('.vpage'), (e) => {
+                const inc = (v) => e.target.className.split(' ').includes(v);
+                if (inc("current") || inc("vpage")) {
+                  return;
+                }
+                if (inc("numbers")) {
+                  defaultComment.page = Number(e.target.innerText) - 1;
+                } else if (inc("prev")) {
+                  defaultComment.page--;
+                } else if (inc("next")) {
+                  defaultComment.page++;
+                }
+                query();
+              })
+            })
+          } else {
+            pageHandle();
+          }
         }
         _root.loading.hide();
       }).catch(ex => {
-        //err(ex)
+        console.log('ex :', ex);
         _root.loading.hide();
       })
     }
     query();
+
+    let pageHandle = () => {
+      const page = defaultComment.page;
+      const count = _root.el.querySelector('.count .num').innerText
+      console.log('page :', page);
+      if (_root.el.querySelector('.vpage .numbers.current')) {
+        _root.el.querySelector('.vpage .numbers.current').classList.remove('current');
+      }
+      _root.el.querySelectorAll('.vpage .numbers')[page].classList.add('current');
+
+      const domClass = {
+        0: '.prev',
+        [parseInt(count / defaultComment.pageSize, 10) - 1]: '.next'
+      }
+
+      Object.values(domClass).map(e => _root.el.querySelector(`.vpage ${e}`).removeAttribute('style'))
+      if (domClass[page]) {
+        _root.el.querySelector(`.vpage ${domClass[page]}`).setAttribute('style', 'display:none;');
+        return;
+      }
+    }
 
     let insertDom = (ret, mt) => {
 
