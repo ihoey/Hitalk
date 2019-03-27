@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-27 17:43:15
+ * @Last Modified time: 2019-03-27 18:46:38
  */
 
 import md5 from 'blueimp-md5';
@@ -110,6 +110,7 @@ class Hitalk {
       let placeholder = option.placeholder || '';
       let eleHTML = `
             <div class="vwrap">
+                <div class="welcome">欢迎回来，{name}！<span class="info-edit">修改</span></div>
                 <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
                 <div class="vedit">
                     <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
@@ -449,6 +450,12 @@ class Hitalk {
           _root.el.querySelector(`.v${k}`).value = s[k];
           defaultComment[k] = s[k];
         }
+        const welcome = _root.el.querySelector(`.welcome`).innerHTML;
+        _root.el.querySelector(`.welcome`).innerHTML = welcome.replace('{name}', s["nick"]);
+        _root.el.querySelector(`.vheader`).classList.add('hide');
+        Event.on('click', _root.el.querySelector(`.welcome .info-edit`), (e) => {
+          _root.el.querySelector(`.vheader`).classList.toggle('hide');
+        })
       }
     }
     getCache();
@@ -490,6 +497,11 @@ class Hitalk {
       }
       if (defaultComment.comment == '') {
         inputs['comment'].focus();
+        _root.alert.show({
+          type: 0,
+          text: '好歹也写点文字嘛ヾ(๑╹◡╹)ﾉ"',
+          ctxt: '好的'
+        })
         return;
       }
       if (defaultComment.nick == '') {
