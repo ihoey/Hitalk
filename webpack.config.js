@@ -23,11 +23,7 @@ module.exports = (env, argv) => {
   }
   return {
     entry: {
-      Hitalk: ['./src/Hitalk.scss', './src/Hitalk.js'],
-      HitalkPure: './src/Hitalk.js',
-      // 'Hitalk.locales': './src/Hitalk.locales.js',
-      // detect: './src/detect.js',
-      // escape: './src/escape.js'
+      Hitalk: './src/Hitalk.js',
     },
     output: {
       path: BUILD_PATH,

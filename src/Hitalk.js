@@ -2,12 +2,14 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-28 17:46:23
+ * @Last Modified time: 2019-03-28 18:48:22
  */
 
 import md5 from 'blueimp-md5'
 import marked from 'marked'
 import detect from './detect'
+import './Hitalk.scss'
+
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
   ds: ['mm', 'identicon', 'monsterid', 'wavatar', 'retro', ''],
