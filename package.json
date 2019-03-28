@@ -6,7 +6,8 @@
   "autoupdate": {
     "source": "git",
     "target": "git://github.com/ihoey/Hitalk.git",
-    "fileMap": [{
+    "fileMap": [
+      {
         "basePath": "dist",
         "files": [
           "Hitalk*.+(js|map|css)"
@@ -21,7 +22,8 @@
     ]
   },
   "dependencies": {
-    "marked": "^0.3.19"
+    "marked": "^0.3.19",
+    "uglifyjs-webpack-plugin": "^2.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.1",

@@ -1,16 +1,19 @@
-var webpack = require('webpack');
-var path = require('path');
-var autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
+const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-// var libraryName = 'Hitalk';
-var ROOT_PATH = path.resolve(__dirname);
-var APP_PATH = path.resolve(ROOT_PATH, 'src');
-var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
-
-var plugins = [];
+const ROOT_PATH = path.resolve(__dirname);
+const APP_PATH = path.resolve(ROOT_PATH, 'src');
+const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
+const plugins = [];
 
 module.exports = (env, argv) => {
   if (argv.mode != "development") {
+    plugins.push(new UglifyJsPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true
+    }));
     plugins.push(new webpack.LoaderOptionsPlugin({
       minimize: true
     }));
@@ -21,7 +24,7 @@ module.exports = (env, argv) => {
   return {
     entry: {
       Hitalk: ['./src/Hitalk.scss', './src/Hitalk.js'],
-      'HitalkPure': './src/Hitalk.js',
+      HitalkPure: './src/Hitalk.js',
       // 'Hitalk.locales': './src/Hitalk.locales.js',
       // detect: './src/detect.js',
       // escape: './src/escape.js'

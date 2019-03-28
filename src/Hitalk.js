@@ -2,18 +2,18 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-27 19:30:54
+ * @Last Modified time: 2019-03-28 17:46:23
  */
 
-import md5 from 'blueimp-md5';
-import marked from 'marked';
-import detect from './detect';
+import md5 from 'blueimp-md5'
+import marked from 'marked'
+import detect from './detect'
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
   ds: ['mm', 'identicon', 'monsterid', 'wavatar', 'retro', ''],
   params: '?s=40',
   hide: !1
-};
+}
 const defaultComment = {
   comment: '',
   rid: '',
@@ -23,362 +23,378 @@ const defaultComment = {
   ua: navigator.userAgent,
   url: '',
   pin: 0,
-  like: 0,
-  page: 0
-};
-const GUEST_INFO = ['nick', 'mail', 'link'];
+  like: 0
+}
+const GUEST_INFO = ['nick', 'mail', 'link']
+const store = localStorage
 
 const smiliesData = {
-  '泡泡': `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
-  '阿鲁': `高兴|小怒|脸红|内伤|装大款|赞一个|害羞|汗|吐血倒地|深思|不高兴|无语|亲亲|口水|尴尬|中指|想一想|哭泣|便便|献花|皱眉|傻笑|狂汗|吐|喷水|看不见|鼓掌|阴暗|长草|献黄瓜|邪恶|期待|得意|吐舌|喷血|无所谓|观察|暗地观察|肿包|中枪|大囧|呲牙|抠鼻|不说话|咽气|欢呼|锁眉|蜡烛|坐等|击掌|惊喜|喜极而泣|抽烟|不出所料|愤怒|无奈|黑线|投降|看热闹|扇耳光|小眼睛|中刀`
+  泡泡: `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
+  阿鲁: `高兴|小怒|脸红|内伤|装大款|赞一个|害羞|汗|吐血倒地|深思|不高兴|无语|亲亲|口水|尴尬|中指|想一想|哭泣|便便|献花|皱眉|傻笑|狂汗|吐|喷水|看不见|鼓掌|阴暗|长草|献黄瓜|邪恶|期待|得意|吐舌|喷血|无所谓|观察|暗地观察|肿包|中枪|大囧|呲牙|抠鼻|不说话|咽气|欢呼|锁眉|蜡烛|坐等|击掌|惊喜|喜极而泣|抽烟|不出所料|愤怒|无奈|黑线|投降|看热闹|扇耳光|小眼睛|中刀`
 }
-const pReg = new RegExp("\\@\\(\\s*(" + smiliesData.泡泡 + "\)\\s*\\)")
-const aReg = new RegExp("\\#\\(\\s*(" + smiliesData.阿鲁 + "\)\\s*\\)")
-var subfix = "";
+const pReg = new RegExp('\\@\\(\\s*(' + smiliesData.泡泡 + ')\\s*\\)')
+const aReg = new RegExp('\\#\\(\\s*(' + smiliesData.阿鲁 + ')\\s*\\)')
+let subfix = ''
 if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
-  subfix = "@2x";
+  subfix = '@2x'
 }
 
-const store = localStorage;
 class Hitalk {
-  /**
-   * Hitalk constructor function
-   * @param {Object} option
-   * @constructor
-   */
   constructor(option) {
-    let _root = this;
-    // version
-    _root.version = '1.2.0';
+    this.md5 = md5
+    this.version = '1.2.0'
 
-    _root.md5 = md5;
-    // Hitalk init
-    !!option && _root.init(option);
+    const av = option.av || AV
+    const appId = option.app_id || option.appId
+    const appKey = option.app_key || option.appKey
+
+    if (!appId || !appKey) {
+      this.throw('初始化失败，请检查你的appid或者appkey.')
+    }
+
+    av.init({ appId, appKey })
+    this.v = av
+
+    defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '')
+    // 分页
+    this.pageSize = option.pageSize || 10
+    this.page = 0
+
+    !!option && this.init(option)
   }
 
-  /**
-   * Hitalk Init
-   * @param {Object} option
-   */
+  throw(msg) {
+    throw new Error(`Hitalk: ${msg}`)
+  }
+
   init(option) {
-    let _root = this;
     try {
-      // init av
-      let av = option.av || AV;
-      let appId = option.app_id || option.appId;
-      let appKey = option.app_key || option.appKey;
-      if (!appId || !appKey) {
-        _root.loading.hide();
-        throw '初始化失败，请检查你的appid或者appkey.';
-      }
-      av.applicationId = null;
-      av.init({
-        appId: appId,
-        appKey: appKey
-      });
-      _root.v = av;
-      defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '');
-      defaultComment.pageSize = option.pageSize || 10;
-
-      //评论数
-      _root.initCount()
-
       // get el
-      let el = ({}).toString.call(option.el) === "[object HTMLDivElement]" ? option.el : document.querySelectorAll(option.el)[0];
-      if (({}).toString.call(el) != '[object HTMLDivElement]') {
-        throw `The target element was not found.`;
+      let el =
+        {}.toString.call(option.el) === '[object HTMLDivElement]' ? option.el : document.querySelectorAll(option.el)[0]
+      if ({}.toString.call(el) != '[object HTMLDivElement]') {
+        this.throw(`The target element was not found.`)
       }
-      _root.el = el;
-      _root.el.classList.add('Hitalk');
+      this.el = el
+      this.el.classList.add('Hitalk')
 
       // 自定义 header
-      const guest_info = option.guest_info || GUEST_INFO;
+      const guest_info = option.guest_info || GUEST_INFO
       const inputEl = guest_info.map(item => {
         switch (item) {
           case 'nick':
-            return '<input name="nick" placeholder="称呼" class="vnick vinput" type="text">';
+            return '<input name="nick" placeholder="称呼" class="vnick vinput" type="text">'
           case 'mail':
-            return '<input name="mail" placeholder="邮箱(会收到提醒哦~)" class="vmail vinput" type="email">';
+            return '<input name="mail" placeholder="邮箱(会收到提醒哦~)" class="vmail vinput" type="email">'
           case 'link':
-            return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">';
+            return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">'
           default:
-            return '';
+            return ''
         }
-      });
+      })
 
       // 填充元素
-      let placeholder = option.placeholder || '';
+      let placeholder = option.placeholder || ''
       let eleHTML = `
-            <div class="vwrap">
-                <div class="welcome" style="display:none;">欢迎回来，{name}！<span class="info-edit">修改</span></div>
-                <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
-                <div class="vedit">
-                    <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
-                </div>
-                <div class="vcontrol">
-                    <span class="col col-60 smilies">
-                        <div class="col smilies-logo"><span>^_^</span></div>
-                        <div class="col" title="Markdown is Support">MarkDown is Support</div>
-                        <div class="smilies-body"></div>
-                    </span>
-                    <div class="col col-40 text-right">
-                        <button type="button" class="vsubmit vbtn">回复</button>
-                    </div>
-                </div>
-                <div style="display:none;" class="vmark"></div>
-            </div>
-            <div class="info">
-                <div class="count col"></div>
-            </div>
-            <div class="vloading"></div>
-            <div class="vempty" style="display:none;"></div>
-            <ul class="vlist"></ul>
-            <div class="vpage txt-right"></div>`;
-      _root.el.innerHTML = eleHTML;
+      <div class="vwrap">
+          <div class="welcome dn">欢迎回来，{name}！<span class="info-edit">修改</span></div>
+          <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
+          <div class="vedit">
+              <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
+          </div>
+          <div class="vcontrol">
+              <span class="col col-60 smilies">
+                  <div class="col smilies-logo"><span>^_^</span></div>
+                  <div class="col" title="Markdown is Support">MarkDown is Support</div>
+                  <div class="smilies-body"></div>
+              </span>
+              <div class="col col-40 text-right">
+                  <button type="button" class="vsubmit vbtn">回复</button>
+              </div>
+          </div>
+          <div class="vmark dn"></div>
+      </div>
+      <div class="info">
+          <div class="count col"></div>
+      </div>
+      <div class="vloading"></div>
+      <div class="vempty dn"></div>
+      <ul class="vlist"></ul>
+      <div class="vpage txt-right"></div>`
+
+      this.el.innerHTML = eleHTML
 
       // Empty Data
-      let vempty = _root.el.querySelector('.vempty');
-      _root.nodata = {
-        show(txt) {
-          vempty.innerHTML = txt || `还没有评论哦，快来抢沙发吧!`;
-          vempty.setAttribute('style', 'display:block;');
+      let vempty = this.el.querySelector('.vempty')
+      const nodata = {
+        show(txt = '还没有评论哦，快来抢沙发吧!') {
+          vempty.innerHTML = txt
+          vempty.classList.remove('dn')
         },
         hide() {
-          vempty.setAttribute('style', 'display:none;');
+          vempty.classList.add('dn')
         }
       }
 
       // loading
-      let _spinner = `<div class="spinner"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="r4"></div><div class="r5"></div></div>`;
-      let vloading = _root.el.querySelector('.vloading');
-      vloading.innerHTML = _spinner;
+      let _spinner = `<div class="spinner"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="r4"></div><div class="r5"></div></div>`
+      let vloading = this.el.querySelector('.vloading')
+      vloading.innerHTML = _spinner
       // loading control
-      _root.loading = {
-        show() {
-          vloading.setAttribute('style', 'display:block;');
-          _root.nodata.hide();
-        },
-        hide() {
-          vloading.setAttribute('style', 'display:none;');
-          _root.el.querySelectorAll('.vcard').length === 0 && _root.nodata.show();
-        }
-      };
+      this.loading = {}
+      this.loading.show = () => {
+        vloading.classList.remove('dn')
+        nodata.hide()
+      }
+      this.loading.hide = () => {
+        vloading.classList.add('dn')
+        el.querySelectorAll('.vcard').length === 0 && nodata.show()
+      }
 
-      gravatar['params'] = '?d=' + (gravatar['ds'].indexOf(option.avatar) > -1 ? option.avatar : 'mm');
-      gravatar['hide'] = option.avatar === 'hide' ? !0 : !1;
+      gravatar['params'] = '?d=' + (gravatar['ds'].indexOf(option.avatar) > -1 ? option.avatar : 'mm')
+      gravatar['hide'] = option.avatar === 'hide' ? !0 : !1
     } catch (ex) {
-      console.log(ex);
-      let issue = 'https://github.com/ihoey/Hitalk/issues';
-      if (_root.el) _root.nodata.show(`<pre style="color:red;text-align:left;">${ex}<br>Hitalk:<b>${_root.version}</b><br>反馈：${issue}</pre>`);
-      else console && console.log(`%c${ex}\n%cHitalk%c${_root.version} ${issue}`, 'color:red;', 'background:#000;padding:5px;line-height:30px;color:#fff;', 'background:#456;line-height:30px;padding:5px;color:#fff;');
-      return;
+      let issue = 'https://github.com/ihoey/Hitalk/issues'
+      if (this.el)
+        nodata.show(
+          `<pre style="color:red;text-align:left;">${ex}<br>Hitalk:<b>${this.version}</b><br>反馈：${issue}</pre>`
+        )
+      else
+        console &&
+          console.log(
+            `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
+            'color:red;',
+            'background:#000;padding:5px;line-height:30px;color:#fff;',
+            'background:#456;line-height:30px;padding:5px;color:#fff;'
+          )
+      return
     }
 
-    let _mark = _root.el.querySelector('.vmark');
+    let _mark = this.el.querySelector('.vmark')
     // alert
-    _root.alert = {
-      /**
-       * {
-       *  type:0/1,
-       *  text:'',
-       *  ctxt:'',
-       *  otxt:'',
-       *  cb:fn
-       * }
-       *
-       * @param {Object} o
-       */
-      show(o) {
-        _mark.innerHTML = `<div class="valert txt-center"><div class="vtext">${o.text}</div><div class="vbtns"></div></div>`;
-        let _vbtns = _mark.querySelector('.vbtns');
-        let _cBtn = `<button class="vcancel vbtn">${o && o.ctxt || '我再看看'}</button>`;
-        let _oBtn = `<button class="vsure vbtn">${o && o.otxt || '继续提交'}</button>`;
-        _vbtns.innerHTML = `${_cBtn}${o.type && _oBtn}`;
-        _mark.querySelector('.vcancel').addEventListener('click', function(e) {
-          _root.alert.hide();
-        });
-        _mark.setAttribute('style', 'display:block;');
-        if (o && o.type) {
-          let _ok = _mark.querySelector('.vsure');
-          Event.on('click', _ok, (e) => {
-            _root.alert.hide();
-            o.cb && o.cb();
-          });
-        }
-      },
-      hide() {
-        _mark.setAttribute('style', 'display:none;');
+    this.alert = {}
+    this.alert.show = o => {
+      _mark.innerHTML = `<div class="valert txt-center"><div class="vtext">${
+        o.text
+      }</div><div class="vbtns"></div></div>`
+      let _vbtns = _mark.querySelector('.vbtns')
+      let _cBtn = `<button class="vcancel vbtn">${(o && o.ctxt) || '我再看看'}</button>`
+      let _oBtn = `<button class="vsure vbtn">${(o && o.otxt) || '继续提交'}</button>`
+      _vbtns.innerHTML = `${_cBtn}${o.type && _oBtn}`
+      _mark.querySelector('.vcancel').addEventListener('click', e => {
+        this.alert.hide()
+      })
+      _mark.classList.remove('dn')
+      if (o && o.type) {
+        let _ok = _mark.querySelector('.vsure')
+        Event.on('click', _ok, e => {
+          this.alert.hide()
+          o.cb && o.cb()
+        })
       }
     }
+    this.alert.hide = () => {
+      _mark.classList.add('dn')
+    }
+
+    //评论数
+    this.initCount()
 
     // Bind Event
-    _root.bind(option);
+    this.bind(option)
   }
 
   commonQuery(url) {
-    let query = new this.v.Query('Comment');
-    query.equalTo('url', url || defaultComment['url']).descending('createdAt');
-    return query;
+    let query = new this.v.Query('Comment')
+    query.equalTo('url', url || defaultComment['url']).descending('createdAt')
+    return query
   }
 
   initCount() {
-    const pCount = document.querySelectorAll(".hitalk-comment-count");
-    const vArr = [];
-    const urlArr = [];
+    const pCount = document.querySelectorAll('.hitalk-comment-count')
+    const vArr = []
+    const urlArr = []
 
     for (let i = 0; i < pCount.length; i++) {
-      const el = pCount[i];
-      const url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '');
+      const el = pCount[i]
+      const url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '')
 
-      urlArr[i] = url;
-      vArr[i] = this.commonQuery(url);
+      urlArr[i] = url
+      vArr[i] = this.commonQuery(url)
     }
+    const _curUrl = location.pathname.replace(/index\.(html|htm)/, '')
+    const _count = this.el.querySelector('.count')
 
-    const cq = new this.v.Query.or(...vArr);
-    cq.select('url').limit(1000).find().then(res => {
-      urlArr.map((e, i) => pCount[i].innerText = res.filter(x => e === x.get("url")).length)
-    }).catch(ex => {
-      throw ex;
-    })
+    const cq = new this.v.Query.or(...vArr)
+    cq.select('url')
+      .limit(1000)
+      .find()
+      .then(res => {
+        urlArr.map((e, i) => (pCount[i].innerText = res.filter(x => e === x.get('url')).length))
+        if (_count) {
+          // 填充评论框位置的数量
+          _count.innerHTML = `评论(<span class="num">${res.filter((x = _curUrl === x.get('url'))).length}</span>)`
+        }
+      })
+      .catch(ex => {
+        this.throw(ex)
+      })
   }
   /**
    * Bind Event
    */
   bind(option) {
-    let _root = this;
-    let guest_info = (option.guest_info || GUEST_INFO).filter(item => GUEST_INFO.indexOf(item) > -1);
+    let guest_info = (option.guest_info || GUEST_INFO).filter(item => GUEST_INFO.indexOf(item) > -1)
 
-    let expandEvt = (el) => {
+    let expandEvt = el => {
       if (el.offsetHeight > 180) {
-        el.classList.add('expand');
-        Event.on('click', el, (e) => {
-          el.setAttribute('class', 'vcontent');
+        el.classList.add('expand')
+        Event.on('click', el, e => {
+          el.setAttribute('class', 'vcontent')
         })
       }
     }
 
     let query = () => {
-      _root.loading.show();
-      let cq = _root.commonQuery();
-      cq.limit(defaultComment.pageSize).skip(defaultComment.page * defaultComment.pageSize).find().then(rets => {
-        let len = rets.length;
-        if (len) {
-          _root.el.querySelector('.vlist').innerHTML = '';
-          for (let i = 0; i < len; i++) {
-            insertDom(rets[i], !0)
-          }
-          let countDom = _root.el.querySelector('.count').innerText;
-          if (!countDom) {
-            cq.count().then(len => {
-              const pageCount = len / defaultComment.pageSize
-              _root.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`;
-              let vpageDom = `<span class="prev page-numbers" style="display:none;">&lt;</span>`;
-              for (let index = 1; index < pageCount; index++) {
-                vpageDom += `<span class="page-numbers numbers ${index == 1 ? 'current' : ''}">${index}</span>`;
-              }
-              vpageDom += `<span class="next page-numbers">&gt;</span>`;
-              _root.el.querySelector('.vpage').innerHTML = vpageDom;
-              Event.on('click', _root.el.querySelector('.vpage'), (e) => {
-                const inc = (v) => e.target.className.split(' ').includes(v);
-                if (inc("current") || inc("vpage")) {
-                  return;
-                }
-                if (inc("numbers")) {
-                  defaultComment.page = Number(e.target.innerText) - 1;
-                } else if (inc("prev")) {
-                  defaultComment.page--;
-                } else if (inc("next")) {
-                  defaultComment.page++;
-                }
-                query();
-              })
-            })
-          } else {
-            pageHandle();
-          }
-        }
-        _root.loading.hide();
-      }).catch(ex => {
-        console.log('ex :', ex);
-        _root.loading.hide();
-      })
-    }
-    query();
+      this.loading.show()
+      let cq = this.commonQuery()
+      cq.limit(this.pageSize)
+        .skip(this.page * this.pageSize)
+        .find()
+        .then(rets => {
+          let len = rets.length
+          if (len) {
+            this.el.querySelector('.vlist').innerHTML = ''
+            for (let i = 0; i < len; i++) {
+              insertDom(rets[i], !0)
+            }
+            let _count = this.el.querySelector('.num')
+            if (!_count) {
+              cq.count().then(len => {
+                const _pageCount = len / this.pageSize
+                this.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`
 
-    let pageHandle = () => {
-      const page = defaultComment.page;
-      const count = _root.el.querySelector('.count .num').innerText
-      console.log('page :', page);
-      if (_root.el.querySelector('.vpage .numbers.current')) {
-        _root.el.querySelector('.vpage .numbers.current').classList.remove('current');
+                const _pageDom = (_class, _text) => `<span class="${_class} page-numbers">${_text}</span>`
+                let vpageDom = _pageDom('prev dn', '&lt;')
+                for (let index = 1; index < _pageCount; index++) {
+                  vpageDom += _pageDom(`numbers ${index == 1 ? 'current' : ''}`, index)
+                }
+                vpageDom += _pageDom('next dn', '&gt;')
+                this.el.querySelector('.vpage').innerHTML = vpageDom
+                pageHandle(len)
+
+                Event.on('click', this.el.querySelector('.vpage'), e => {
+                  const inc = v => e.target.className.split(' ').includes(v)
+                  if (inc('current') || inc('vpage')) {
+                    return
+                  }
+                  if (inc('numbers')) {
+                    this.page = Number(e.target.innerText) - 1
+                  } else if (inc('prev')) {
+                    this.page--
+                  } else if (inc('next')) {
+                    this.page++
+                  }
+                  query()
+                })
+                addSmilies()
+              })
+            } else {
+              pageHandle(_count.innerText)
+            }
+          }
+          this.loading.hide()
+        })
+        .catch(ex => {
+          this.loading.hide()
+          this.throw(ex)
+        })
+    }
+    query()
+
+    let pageHandle = _count => {
+      if (this.el.querySelector('.vpage .numbers.current')) {
+        this.el.querySelector('.vpage .numbers.current').classList.remove('current')
       }
-      _root.el.querySelectorAll('.vpage .numbers')[page].classList.add('current');
+      this.el.querySelectorAll('.vpage .numbers')[this.page].classList.add('current')
 
       const domClass = {
         0: '.prev',
-        [parseInt(count / defaultComment.pageSize, 10) - 1]: '.next'
+        [parseInt(_count / this.pageSize, 10) - 1]: '.next'
       }
 
-      Object.values(domClass).map(e => _root.el.querySelector(`.vpage ${e}`).removeAttribute('style'))
-      if (domClass[page]) {
-        _root.el.querySelector(`.vpage ${domClass[page]}`).setAttribute('style', 'display:none;');
-        return;
+      Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
+      if (domClass[this.page]) {
+        this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
+        return
       }
     }
 
     let insertDom = (ret, mt) => {
+      let _vcard = document.createElement('li')
+      _vcard.setAttribute('class', 'vcard')
+      _vcard.setAttribute('id', ret.id)
+      let _ua = detect(ret.get('ua'))
+      let _img = gravatar['hide']
+        ? ''
+        : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
+      _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({
+        link: ret.get('link'),
+        mail: ret.get('mail')
+      })}" target="_blank" >${ret.get('nick')}</a>
+      <span class="vsys">${_ua.os} ${_ua.osVersion}</span>
+      <span class="vsys">${_ua.browser} ${_ua.version}</span>
+      </div><div class="vcontent">${ret.get('comment')}</div><div class="vfooter"><span class="vtime">${timeAgo(
+        ret.get('createdAt')
+      )}</span><span rid='${ret.id}' at='@${ret.get('nick')}' mail='${ret.get(
+        'mail'
+      )}' class="vat">回复</span><div></section>`
 
-      let _vcard = document.createElement('li');
-      _vcard.setAttribute('class', 'vcard');
-      _vcard.setAttribute('id', ret.id);
-      let _ua = detect(ret.get("ua"))
-      let _img = gravatar['hide'] ? '' : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`;
-      _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({ link: ret.get('link'), mail: ret.get('mail') })}" target="_blank" >${ret.get("nick")}</a>
-            <span class="vsys">${_ua.os} ${_ua.osVersion}</span>
-            <span class="vsys">${_ua.browser} ${_ua.version}</span>
-            </div><div class="vcontent">${ret.get("comment")}</div><div class="vfooter"><span class="vtime">${timeAgo(ret.get("createdAt"))}</span><span rid='${ret.id}' at='@${ret.get('nick')}' mail='${ret.get('mail')}' class="vat">回复</span><div></section>`;
-      let _vlist = _root.el.querySelector('.vlist');
-      let _vlis = _vlist.querySelectorAll('li');
-      let _vat = _vcard.querySelector('.vat');
-      let _as = _vcard.querySelectorAll('a');
+      let _vlist = this.el.querySelector('.vlist')
+      let _vlis = _vlist.querySelectorAll('li')
+      let _vat = _vcard.querySelector('.vat')
+      let _as = _vcard.querySelectorAll('a')
       for (let i = 0, len = _as.length; i < len; i++) {
-        let item = _as[i];
+        let item = _as[i]
         if (item && item.getAttribute('class') != 'at') {
-          item.setAttribute('target', '_blank');
-          item.setAttribute('rel', 'nofollow');
+          item.setAttribute('target', '_blank')
+          item.setAttribute('rel', 'nofollow')
         }
       }
-      if (mt) _vlist.appendChild(_vcard);
-      else _vlist.insertBefore(_vcard, _vlis[0]);
-      let _vcontent = _vcard.querySelector('.vcontent');
-      expandEvt(_vcontent);
-      bindAtEvt(_vat);
-
+      if (mt) _vlist.appendChild(_vcard)
+      else _vlist.insertBefore(_vcard, _vlis[0])
+      let _vcontent = _vcard.querySelector('.vcontent')
+      expandEvt(_vcontent)
+      bindAtEvt(_vat)
     }
 
     // 填充表情节点
     let addSmilies = () => {
-      let _smilies = _root.el.querySelector('.smilies-body');
-      let _ul, _li = '';
-      let fragment = document.createDocumentFragment();
+      let _smilies = this.el.querySelector('.smilies-body')
+      let _ul,
+        _li = ''
+      let fragment = document.createDocumentFragment()
       const sl = '泡泡'
       Object.keys(smiliesData).forEach((y, i) => {
-        _ul = document.createElement("ul");
+        _ul = document.createElement('ul')
         _ul.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == sl ? ' smilies-items-show' : ''))
         _ul.setAttribute('data-id', i)
         smiliesData[y].split('|').forEach(e => {
-          _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') + `(${e})`}">
-                    <img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${y == sl ? 'newpaopao' : 'alu'}/${e + subfix}.png">
-                    </li>`
+          _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') +
+            `(${e})`}"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
+            y == sl ? 'newpaopao' : 'alu'
+          }/${e + subfix}.png"></li>`
         })
-        _li += `<li class="smilies-name ${y == sl ? 'smilies-package-active' : ''}" data-id="${i}"><span>${y}</span></li>`
-        fragment.appendChild(_ul); //添加ul
+        _li += `<li class="smilies-name ${
+          y == sl ? 'smilies-package-active' : ''
+        }" data-id="${i}"><span>${y}</span></li>`
+        fragment.appendChild(_ul) //添加ul
       })
-      let _div = document.createElement("div");
+      let _div = document.createElement('div')
       _div.setAttribute('class', 'smilies-bar')
       _div.innerHTML = `<ul class="smilies-packages">${_li}</ul>`
-      fragment.appendChild(_div); //再次添加div
-      _smilies.appendChild(fragment);
+      fragment.appendChild(_div) //再次添加div
+      _smilies.appendChild(fragment)
 
       let smilies = document.querySelector('.smilies')
       let _el = document.querySelector('.veditor')
@@ -400,7 +416,6 @@ class Hitalk {
             document.querySelectorAll('.smilies-items').forEach(e => e.classList.remove('smilies-items-show'))
             document.querySelectorAll('.smilies-items')[e.getAttribute('data-id')].classList.add('smilies-items-show')
             e.classList.add('smilies-package-active')
-
           }
         }
       })
@@ -412,56 +427,54 @@ class Hitalk {
           smilies.classList.remove('smilies-open')
         }
       })
-
-    };
-
-    setTimeout(addSmilies, 0);
+    }
 
     let mapping = {
-      veditor: "comment"
+      veditor: 'comment'
     }
     for (let i = 0, length = guest_info.length; i < length; i++) {
-      mapping[`v${guest_info[i]}`] = guest_info[i];
+      mapping[`v${guest_info[i]}`] = guest_info[i]
     }
 
-    let inputs = {};
+    let inputs = {}
     for (let i in mapping) {
       if (mapping.hasOwnProperty(i)) {
-        let _v = mapping[i];
-        let _el = _root.el.querySelector(`.${i}`);
-        inputs[_v] = _el;
-        Event.on('input', _el, (e) => {
-          defaultComment[_v] = _v === 'comment' ? marked(_el.value, {
-            sanitize: !0,
-            breaks: !0
-          }) : HtmlUtil.encode(_el.value);
-        });
+        let _v = mapping[i]
+        let _el = this.el.querySelector(`.${i}`)
+        inputs[_v] = _el
+        Event.on('input', _el, e => {
+          defaultComment[_v] =
+            _v === 'comment'
+              ? marked(_el.value, {
+                  sanitize: !0,
+                  breaks: !0
+                })
+              : HtmlUtil.encode(_el.value)
+        })
       }
     }
 
     // cache
     let getCache = () => {
-      let s = store && store.HitalkCache;
+      let s = store && store.HitalkCache
       if (s) {
-        s = JSON.parse(s);
-        let m = guest_info;
+        s = JSON.parse(s)
+        let m = guest_info
         for (let i in m) {
-          let k = m[i];
-          _root.el.querySelector(`.v${k}`).value = s[k];
-          defaultComment[k] = s[k];
+          let k = m[i]
+          this.el.querySelector(`.v${k}`).value = s[k]
+          defaultComment[k] = s[k]
         }
-        const welcome = _root.el.querySelector(`.welcome`).innerHTML;
-        _root.el.querySelector(`.welcome`).removeAttribute('style');
-        _root.el.querySelector(`.welcome`).innerHTML = welcome.replace('{name}', s["nick"]);
-        _root.el.querySelector(`.vheader`).classList.add('hide');
-        Event.on('click', _root.el.querySelector(`.welcome .info-edit`), (e) => {
-          _root.el.querySelector(`.vheader`).classList.toggle('hide');
+        const welcome = this.el.querySelector(`.welcome`).innerHTML
+        this.el.querySelector(`.welcome`).classList.remove('dn')
+        this.el.querySelector(`.welcome`).innerHTML = welcome.replace('{name}', s['nick'])
+        this.el.querySelector(`.vheader`).classList.add('hide')
+        Event.on('click', this.el.querySelector(`.welcome .info-edit`), e => {
+          this.el.querySelector(`.vheader`).classList.toggle('hide')
         })
       }
     }
-    getCache();
-
-
+    getCache()
 
     let atData = {
       rmail: '',
@@ -472,63 +485,71 @@ class Hitalk {
     let reset = () => {
       for (let i in mapping) {
         if (mapping.hasOwnProperty(i)) {
-          let _v = mapping[i];
-          let _el = _root.el.querySelector(`.${i}`);
-          _el.value = "";
-          defaultComment[_v] = "";
+          let _v = mapping[i]
+          let _el = this.el.querySelector(`.${i}`)
+          _el.value = ''
+          defaultComment[_v] = ''
         }
       }
-      atData['at'] = '';
-      atData['rmail'] = '';
-      defaultComment['rid'] = '';
-      defaultComment['nick'] = 'Guest';
-      getCache();
+      atData['at'] = ''
+      atData['rmail'] = ''
+      defaultComment['rid'] = ''
+      defaultComment['nick'] = 'Guest'
+      getCache()
     }
 
     // submit
-    let submitBtn = _root.el.querySelector('.vsubmit');
-    let submitEvt = (e) => {
+    let submitBtn = this.el.querySelector('.vsubmit')
+    let submitEvt = e => {
       if (submitBtn.getAttribute('disabled')) {
-        _root.alert.show({
-          type: 0,
+        this.alert.show({
+          type: '',
           text: '再等等，评论正在提交中ヾ(๑╹◡╹)ﾉ"',
           ctxt: '好的'
         })
-        return;
+        return
       }
       if (defaultComment.comment == '') {
-        inputs['comment'].focus();
-        _root.alert.show({
-          type: 0,
+        inputs['comment'].focus()
+        this.alert.show({
+          type: '',
           text: '好歹也写点文字嘛ヾ(๑╹◡╹)ﾉ"',
           ctxt: '好的'
         })
-        return;
+        return
       }
       if (defaultComment.nick == '') {
-        defaultComment['nick'] = '小调皮';
+        defaultComment['nick'] = '小调皮'
       }
-      let idx = defaultComment.comment.indexOf(atData.at);
+      let idx = defaultComment.comment.indexOf(atData.at)
       if (idx > -1 && atData.at != '') {
-        let at = `<a class="at" href='#${defaultComment.rid}'>${atData.at}</a>`;
-        defaultComment.comment = defaultComment.comment.replace(atData.at, at);
+        let at = `<a class="at" href='#${defaultComment.rid}'>${atData.at}</a>`
+        defaultComment.comment = defaultComment.comment.replace(atData.at, at)
       }
       //表情
-      var matched;
-      while (matched = defaultComment.comment.match(pReg)) {
-        defaultComment.comment = defaultComment.comment.replace(matched[0], `<img src="https://cdn.dode.top/newpaopao/${matched[1] + subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`);
+      var matched
+      while ((matched = defaultComment.comment.match(pReg))) {
+        defaultComment.comment = defaultComment.comment.replace(
+          matched[0],
+          `<img src="https://cdn.dode.top/newpaopao/${matched[1] +
+            subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
+        )
       }
-      while (matched = defaultComment.comment.match(aReg)) {
-        defaultComment.comment = defaultComment.comment.replace(matched[0], `<img src="https://cdn.dode.top/alu/${matched[1] + subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`);
+      while ((matched = defaultComment.comment.match(aReg))) {
+        defaultComment.comment = defaultComment.comment.replace(
+          matched[0],
+          `<img src="https://cdn.dode.top/alu/${matched[1] +
+            subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`
+        )
       }
 
       // veirfy
-      let mailRet = check.mail(defaultComment.mail);
-      let linkRet = check.link(defaultComment.link);
-      defaultComment['mail'] = mailRet.k ? mailRet.v : '';
-      defaultComment['link'] = linkRet.k ? linkRet.v : '';
-      const alertShow = (text) => {
-        _root.alert.show({
+      let mailRet = check.mail(defaultComment.mail)
+      let linkRet = check.link(defaultComment.link)
+      defaultComment['mail'] = mailRet.k ? mailRet.v : ''
+      defaultComment['link'] = linkRet.k ? linkRet.v : ''
+      const alertShow = text => {
+        this.alert.show({
           type: 1,
           text,
           cb: () => commitEvt()
@@ -538,113 +559,122 @@ class Hitalk {
       if (!mailRet.k && !linkRet.k && guest_info.indexOf('mail') > -1 && guest_info.indexOf('link') > -1) {
         alertShow('您的网址和邮箱格式不正确, 是否继续提交?')
       } else if (!mailRet.k && guest_info.indexOf('mail') > -1) {
-        alertShow("您的邮箱格式不正确, 是否继续提交?")
+        alertShow('您的邮箱格式不正确, 是否继续提交?')
       } else if (!linkRet.k && guest_info.indexOf('link') > -1) {
-        alertShow("您的网址格式不正确, 是否继续提交?")
+        alertShow('您的网址格式不正确, 是否继续提交?')
       } else {
-        commitEvt();
+        commitEvt()
       }
     }
 
     // setting access
     let getAcl = () => {
-      let acl = new _root.v.ACL();
-      acl.setPublicReadAccess(!0);
-      acl.setPublicWriteAccess(!1);
-      return acl;
+      let acl = new this.v.ACL()
+      acl.setPublicReadAccess(!0)
+      acl.setPublicWriteAccess(!1)
+      return acl
     }
 
     let commitEvt = () => {
-      submitBtn.setAttribute('disabled', !0);
-      _root.loading.show();
+      submitBtn.setAttribute('disabled', !0)
+      this.loading.show()
       // 声明类型
-      let Ct = _root.v.Object.extend('Comment');
+      let Ct = this.v.Object.extend('Comment')
       // 新建对象
-      let comment = new Ct();
+      let comment = new Ct()
       for (let i in defaultComment) {
         if (defaultComment.hasOwnProperty(i)) {
-          let _v = defaultComment[i];
-          comment.set(i, _v);
+          let _v = defaultComment[i]
+          comment.set(i, _v)
         }
       }
-      comment.setACL(getAcl());
-      comment.save().then((ret) => {
-        defaultComment['nick'] != 'Guest' && store && store.setItem('HitalkCache', JSON.stringify({
-          nick: defaultComment['nick'],
-          link: defaultComment['link'],
-          mail: defaultComment['mail']
-        }));
-        let _count = _root.el.querySelector('.num');
-        let num = 1;
-        try {
+      comment.setACL(getAcl())
+      comment
+        .save()
+        .then(ret => {
+          defaultComment['nick'] != 'Guest' &&
+            store &&
+            store.setItem(
+              'HitalkCache',
+              JSON.stringify({
+                nick: defaultComment['nick'],
+                link: defaultComment['link'],
+                mail: defaultComment['mail']
+              })
+            )
+          let _count = this.el.querySelector('.num')
+          let num = 1
+          try {
+            if (_count) {
+              num = Number(_count.innerText) + 1
+              _count.innerText = num
+            } else {
+              this.el.querySelector('.count').innerHTML = '评论(<span class="num">1</span>)'
+            }
+            insertDom(ret)
 
-          if (_count) {
-            num = Number(_count.innerText) + 1;
-            _count.innerText = num;
-          } else {
-            _root.el.querySelector('.count').innerHTML = '评论(<span class="num">1</span>)'
+            defaultComment['mail'] &&
+              signUp({
+                username: defaultComment['nick'],
+                mail: defaultComment['mail']
+              })
+
+            submitBtn.removeAttribute('disabled')
+            this.loading.hide()
+            reset()
+          } catch (error) {
+            console.log(error)
           }
-          insertDom(ret);
-
-          defaultComment['mail'] && signUp({
-            username: defaultComment['nick'],
-            mail: defaultComment['mail']
-          });
-
-          submitBtn.removeAttribute('disabled');
-          _root.loading.hide();
-          reset();
-        } catch (error) {
-          console.log(error)
-        }
-      }).catch(ex => {
-        _root.loading.hide();
-      })
+        })
+        .catch(ex => {
+          this.loading.hide()
+          this.throw(ex)
+        })
     }
 
-    let signUp = (o) => {
-      let u = new _root.v.User();
-      u.setUsername(o.username);
-      u.setPassword(o.mail);
-      u.setEmail(o.mail);
-      u.setACL(getAcl());
-      return u.signUp();
+    let signUp = o => {
+      let u = new this.v.User()
+      u.setUsername(o.username)
+      u.setPassword(o.mail)
+      u.setEmail(o.mail)
+      u.setACL(getAcl())
+      return u.signUp()
     }
 
     // at event
-    let bindAtEvt = (el) => {
-      Event.on('click', el, (e) => {
-        let at = el.getAttribute('at');
-        let rid = el.getAttribute('rid');
-        let rmail = el.getAttribute('mail');
-        atData['at'] = at;
-        atData['rmail'] = rmail;
-        defaultComment['rid'] = rid;
-        inputs['comment'].value = `${at} `;
-        inputs['comment'].focus();
+    let bindAtEvt = el => {
+      Event.on('click', el, e => {
+        let at = el.getAttribute('at')
+        let rid = el.getAttribute('rid')
+        let rmail = el.getAttribute('mail')
+        atData['at'] = at
+        atData['rmail'] = rmail
+        defaultComment['rid'] = rid
+        inputs['comment'].value = `${at} `
+        inputs['comment'].focus()
       })
     }
 
-    Event.off('click', submitBtn, submitEvt);
-    Event.on('click', submitBtn, submitEvt);
+    Event.off('click', submitBtn, submitEvt)
+    Event.on('click', submitBtn, submitEvt)
   }
 }
 
 const Event = {
   on(type, el, handler, capture) {
-    if (el.addEventListener) el.addEventListener(type, handler, capture || false);
-    else if (el.attachEvent) el.attachEvent(`on${type}`, handler);
-    else el[`on${type}`] = handler;
+    if (el.addEventListener) el.addEventListener(type, handler, capture || false)
+    else if (el.attachEvent) el.attachEvent(`on${type}`, handler)
+    else el[`on${type}`] = handler
   },
   off(type, el, handler, capture) {
-    if (el.removeEventListener) el.removeEventListener(type, handler, capture || false);
-    else if (el.detachEvent) el.detachEvent(`on${type}`, handler);
-    else el[`on${type}`] = null;
+    if (el.removeEventListener) el.removeEventListener(type, handler, capture || false)
+    else if (el.detachEvent) el.detachEvent(`on${type}`, handler)
+    else el[`on${type}`] = null
   }
 }
 
-const getLink = (target) => {
-  return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);';
+const getLink = target => {
+  return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);'
 }
 
 const check = {
@@ -652,14 +682,14 @@ const check = {
     return {
       k: /[\w-\.]+@([\w-]+\.)+[a-z]{2,3}/.test(m),
       v: m
-    };
+    }
   },
   link(l) {
-    l = l.length > 0 && (/^(http|https)/.test(l) ? l : `http://${l}`);
+    l = l.length > 0 && (/^(http|https)/.test(l) ? l : `http://${l}`)
     return {
       k: /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test(l),
       v: l
-    };
+    }
   }
 }
 
@@ -670,7 +700,15 @@ const HtmlUtil = {
    * @return {String} result
    */
   encode(str) {
-    return !!str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;").replace(/\'/g, "&#39;").replace(/\"/g, "&quot;") : '';
+    return !!str
+      ? str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/ /g, '&nbsp;')
+          .replace(/\'/g, '&#39;')
+          .replace(/\"/g, '&quot;')
+      : ''
   },
   /**
    * HTML解码
@@ -678,62 +716,68 @@ const HtmlUtil = {
    * @return {String} result
    */
   decode(str) {
-    return !!str ? str.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ").replace(/&#39;/g, "\'").replace(/&quot;/g, "\"") : '';
+    return !!str
+      ? str
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&#39;/g, "'")
+          .replace(/&quot;/g, '"')
+      : ''
   }
-};
-
-const dateFormat = (date) => {
-  var vDay = padWithZeros(date.getDate(), 2);
-  var vMonth = padWithZeros(date.getMonth() + 1, 2);
-  var vYear = padWithZeros(date.getFullYear(), 2);
-  return `${vYear}-${vMonth}-${vDay}`;
 }
 
-const timeAgo = (date) => {
-  try {
-    var oldTime = date.getTime();
-    var currTime = new Date().getTime();
-    var diffValue = currTime - oldTime;
+const dateFormat = date => {
+  const vDay = padWithZeros(date.getDate(), 2)
+  const vMonth = padWithZeros(date.getMonth() + 1, 2)
+  const vYear = padWithZeros(date.getFullYear(), 2)
+  return `${vYear}-${vMonth}-${vDay}`
+}
 
-    var days = Math.floor(diffValue / (24 * 3600 * 1000));
+const timeAgo = date => {
+  try {
+    const oldTime = date.getTime()
+    const currTime = new Date().getTime()
+    const diffValue = currTime - oldTime
+
+    const days = Math.floor(diffValue / (24 * 3600 * 1000))
     if (days === 0) {
       //计算相差小时数
-      var leave1 = diffValue % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
-      var hours = Math.floor(leave1 / (3600 * 1000));
+      const leave1 = diffValue % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+      const hours = Math.floor(leave1 / (3600 * 1000))
       if (hours === 0) {
         //计算相差分钟数
-        var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
-        var minutes = Math.floor(leave2 / (60 * 1000));
+        const leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数
+        const minutes = Math.floor(leave2 / (60 * 1000))
         if (minutes === 0) {
           //计算相差秒数
-          var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
-          var seconds = Math.round(leave3 / 1000);
-          return seconds + ' 秒前';
+          const leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+          const seconds = Math.round(leave3 / 1000)
+          return seconds + ' 秒前'
         }
-        return minutes + ' 分钟前';
+        return minutes + ' 分钟前'
       }
-      return hours + ' 小时前';
+      return hours + ' 小时前'
     }
-    if (days < 0) return '刚刚';
+    if (days < 0) return '刚刚'
 
     if (days < 8) {
-      return days + ' 天前';
+      return days + ' 天前'
     } else {
       return dateFormat(date)
     }
   } catch (error) {
     console.log(error)
   }
-
-
 }
 
 const padWithZeros = (vNumber, width) => {
-  var numAsString = vNumber.toString();
+  let numAsString = vNumber.toString()
   while (numAsString.length < width) {
-    numAsString = '0' + numAsString;
+    numAsString = '0' + numAsString
   }
-  return numAsString;
+  return numAsString
 }
 
-module.exports = Hitalk;
+module.exports = Hitalk

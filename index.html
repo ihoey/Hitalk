@@ -153,18 +153,19 @@
     </div>
   </div>
   <div class="copy">
-    &copy; 2018
+    &copy; 2019
     <a href="https://github.com/Ihoey" target="_blank">梦魇小栈</a>
   </div>
   <script>
-    var Hitalk = new Hitalk();
-    Hitalk.init({
+    var Hitalk = new Hitalk({
       el: '.comment',
-      app_id: 'Ir6SE0GwBzFxczMqXXVpCF8d-gzGzoHsz',
-      app_key: 'SnlgtrRYvxJimSYDRw2GBr6H',
+      appId: 'Ir6SE0GwBzFxczMqXXVpCF8d-gzGzoHsz',
+      appKey: 'SnlgtrRYvxJimSYDRw2GBr6H',
       placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
-      avatar: 'wavatar'
-    })
+      avatar: 'wavatar',
+      path: '/'
+    });
+
     window.onload = function() {
       var iframes = document.querySelectorAll('iframe');
       iframes[0].setAttribute('src',

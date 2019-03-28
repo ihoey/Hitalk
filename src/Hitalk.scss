@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-22 21:12:45
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-27 18:44:17
+ * @Last Modified time: 2019-03-28 16:03:13
  */
 
 .Hitalk {
@@ -12,6 +12,10 @@
   * {
     box-sizing: inherit;
     transition: inherit;
+  }
+
+  .dn {
+    display: none !important;
   }
 
   .vinput {
@@ -91,6 +95,7 @@
     .vcontrol {
       //background: #fdfdfd;
       font-size: 0;
+      padding-top: 5px;
 
       .col {
         display: inline-block;
@@ -235,7 +240,7 @@
     text-align: center;
     color: #313131;
     border: 1px solid #f7f7f7;
-    border-radius: 1.9rem;
+    border-radius: .5rem;
     background-color: #f7f7f7;
     display: inline-block;
     background: #ededed;
