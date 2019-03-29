@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-28 18:48:22
+ * @Last Modified time: 2019-03-29 10:22:58
  */
 
 import md5 from 'blueimp-md5'
@@ -61,7 +61,9 @@ class Hitalk {
     // 分页
     this.pageSize = option.pageSize || 10
     this.page = 0
-
+    // 评论数
+    this.initCount()
+    // 初始化评论
     !!option && this.init(option)
   }
 
@@ -199,9 +201,6 @@ class Hitalk {
       _mark.classList.add('dn')
     }
 
-    //评论数
-    this.initCount()
-
     // Bind Event
     this.bind(option)
   }
@@ -214,6 +213,8 @@ class Hitalk {
 
   initCount() {
     const pCount = document.querySelectorAll('.hitalk-comment-count')
+    if (!pCount.length) return false
+
     const vArr = []
     const urlArr = []
 
@@ -224,8 +225,6 @@ class Hitalk {
       urlArr[i] = url
       vArr[i] = this.commonQuery(url)
     }
-    const _curUrl = location.pathname.replace(/index\.(html|htm)/, '')
-    const _count = this.el.querySelector('.count')
 
     const cq = new this.v.Query.or(...vArr)
     cq.select('url')
@@ -233,10 +232,6 @@ class Hitalk {
       .find()
       .then(res => {
         urlArr.map((e, i) => (pCount[i].innerText = res.filter(x => e === x.get('url')).length))
-        if (_count) {
-          // 填充评论框位置的数量
-          _count.innerHTML = `评论(<span class="num">${res.filter((x = _curUrl === x.get('url'))).length}</span>)`
-        }
       })
       .catch(ex => {
         this.throw(ex)
