@@ -6,8 +6,7 @@
   "autoupdate": {
     "source": "git",
     "target": "git://github.com/ihoey/Hitalk.git",
-    "fileMap": [
-      {
+    "fileMap": [{
         "basePath": "dist",
         "files": [
           "Hitalk*.+(js|map|css)"
@@ -31,7 +30,7 @@
     "babel-preset-env": "^1.6.1",
     "blueimp-md5": "^2.8.0",
     "css-loader": "^0.28.4",
-    "node-sass": "^4.5.0",
+    "node-sass": "^4.12.0",
     "postcss-loader": "^2.0.5",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.18.2",

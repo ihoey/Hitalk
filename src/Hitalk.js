@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-03-29 10:22:58
+ * @Last Modified time: 2019-04-28 16:13:25
  */
 
 import md5 from 'blueimp-md5'
@@ -63,19 +63,18 @@ class Hitalk {
     this.page = 0
     // 评论数
     this.initCount()
-    // 初始化评论
-    !!option && this.init(option)
+      // 初始化评论
+      !!option && this.init(option)
   }
 
-  throw(msg) {
+  throw (msg) {
     throw new Error(`Hitalk: ${msg}`)
   }
 
   init(option) {
     try {
       // get el
-      let el =
-        {}.toString.call(option.el) === '[object HTMLDivElement]' ? option.el : document.querySelectorAll(option.el)[0]
+      let el = {}.toString.call(option.el) === '[object HTMLDivElement]' ? option.el : document.querySelectorAll(option.el)[0]
       if ({}.toString.call(el) != '[object HTMLDivElement]') {
         this.throw(`The target element was not found.`)
       }
@@ -165,12 +164,12 @@ class Hitalk {
         )
       else
         console &&
-          console.log(
-            `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
-            'color:red;',
-            'background:#000;padding:5px;line-height:30px;color:#fff;',
-            'background:#456;line-height:30px;padding:5px;color:#fff;'
-          )
+        console.log(
+          `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
+          'color:red;',
+          'background:#000;padding:5px;line-height:30px;color:#fff;',
+          'background:#456;line-height:30px;padding:5px;color:#fff;'
+        )
       return
     }
 
@@ -267,6 +266,8 @@ class Hitalk {
             }
             let _count = this.el.querySelector('.num')
             if (!_count) {
+              addSmilies() // 填充表情
+
               cq.count().then(len => {
                 const _pageCount = len / this.pageSize
                 this.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`
@@ -294,7 +295,6 @@ class Hitalk {
                   }
                   query()
                 })
-                addSmilies()
               })
             } else {
               pageHandle(_count.innerText)
@@ -332,9 +332,9 @@ class Hitalk {
       _vcard.setAttribute('class', 'vcard')
       _vcard.setAttribute('id', ret.id)
       let _ua = detect(ret.get('ua'))
-      let _img = gravatar['hide']
-        ? ''
-        : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
+      let _img = gravatar['hide'] ?
+        '' :
+        `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
       _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({
         link: ret.get('link'),
         mail: ret.get('mail')
@@ -441,12 +441,12 @@ class Hitalk {
         inputs[_v] = _el
         Event.on('input', _el, e => {
           defaultComment[_v] =
-            _v === 'comment'
-              ? marked(_el.value, {
-                  sanitize: !0,
-                  breaks: !0
-                })
-              : HtmlUtil.encode(_el.value)
+            _v === 'comment' ?
+            marked(_el.value, {
+              sanitize: !0,
+              breaks: !0
+            }) :
+            HtmlUtil.encode(_el.value)
         })
       }
     }
@@ -697,15 +697,15 @@ const HtmlUtil = {
    * @return {String} result
    */
   encode(str) {
-    return !!str
-      ? str
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/ /g, '&nbsp;')
-          .replace(/\'/g, '&#39;')
-          .replace(/\"/g, '&quot;')
-      : ''
+    return !!str ?
+      str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/ /g, '&nbsp;')
+      .replace(/\'/g, '&#39;')
+      .replace(/\"/g, '&quot;') :
+      ''
   },
   /**
    * HTML解码
@@ -713,15 +713,15 @@ const HtmlUtil = {
    * @return {String} result
    */
   decode(str) {
-    return !!str
-      ? str
-          .replace(/&amp;/g, '&')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&#39;/g, "'")
-          .replace(/&quot;/g, '"')
-      : ''
+    return !!str ?
+      str
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"') :
+      ''
   }
 }
 
