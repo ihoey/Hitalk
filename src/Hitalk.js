@@ -2,7 +2,7 @@
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
  * @Last Modified by: ihoey
- * @Last Modified time: 2019-04-28 16:13:25
+ * @Last Modified time: 2019-06-24 19:20:50
  */
 
 import md5 from 'blueimp-md5'
@@ -49,12 +49,13 @@ class Hitalk {
     const av = option.av || AV
     const appId = option.app_id || option.appId
     const appKey = option.app_key || option.appKey
+    const serverURLs = option.serverURLs || 'https://avoscloud.com'
 
     if (!appId || !appKey) {
       this.throw('初始化失败，请检查你的appid或者appkey.')
     }
 
-    av.init({ appId, appKey })
+    av.init({ appId, appKey, serverURLs })
     this.v = av
 
     defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '')
