@@ -35,7 +35,7 @@ module.exports = (env, argv) => {
     module: {
       rules: [{
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: 'babel-loader?cacheDirectory=true',
         include: [APP_PATH],
         exclude: /node_modules/
       }, {
