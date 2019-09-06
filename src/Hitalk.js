@@ -49,7 +49,7 @@ class Hitalk {
     const av = option.av || AV
     const appId = option.app_id || option.appId
     const appKey = option.app_key || option.appKey
-    const serverURLs = option.serverURLs || 'https://avoscloud.com'
+    const serverURLs = option.serverURLs || 'https://hitalk.dode.top'
 
     if (!appId || !appKey) {
       this.throw('初始化失败，请检查你的appid或者appkey.')
