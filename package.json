@@ -1,6 +1,6 @@
 {
   "name": "hitalk",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "一款快速、简洁且高效的无后端评论系统",
   "main": "/dist/Hitalk.min.js",
   "autoupdate": {
