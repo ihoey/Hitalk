@@ -1,174 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="keywords" content="Hitalk,极简风,评论系统,极简风评论系统,comment system" />
+    <meta name="description" content="Hitalk - 一款基于Leancloud的极简风评论系统" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no,email=no" name="format-detection" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,Chrome=1" />
+    <title>Hitalk - A simple comment system based on Leancloud.</title>
+    <style>
+      * {
+        margin: 0 auto;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑,
+          'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', Arial, sans-serif;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="keywords" content="Hitalk,极简风,评论系统,极简风评论系统,comment system">
-  <meta name="description" content="Hitalk - 一款基于Leancloud的极简风评论系统">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta content="telephone=no,email=no" name="format-detection">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge,Chrome=1">
-  <title>Hitalk - A simple comment system based on Leancloud.</title>
-  <style>
-    * {
-      margin: 0 auto;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", 微软雅黑, "helvetica neue", helvetica, ubuntu, roboto, noto, "segoe ui", Arial, sans-serif;
-    }
+      body {
+        background-color: rgb(238, 238, 238);
+      }
 
-    body {
-      background-color: rgb(238, 238, 238);
-    }
-
-    header {
-      background: #fff;
-    }
-
-    a {
-      color: #999;
-      text-decoration: none;
-      border-bottom: 1px dotted #dedede;
-    }
-
-    .logo {
-      display: inline-block;
-      height: 60px;
-      font-size: 24px;
-      line-height: 60px;
-      color: #4285f4;
-      vertical-align: base-line;
-    }
-
-    .sub {
-      font-size: 12px;
-      color: #9c9c9c;
-      padding: 0 5px;
-    }
-
-    .market {
-      background-color: #4285f4;
-      height: 398px;
-      position: absolute;
-      top: 60px;
-      width: 100%;
-      outline: none;
-      display: block;
-      z-index: -1;
-    }
-
-    .container {
-      width: 80%;
-    }
-
-    .placeholder {
-      height: 56px;
-    }
-
-    @media screen and (max-width:720px) {
       header {
-        text-align: center;
+        background: #fff;
+      }
+
+      a {
+        color: #999;
+        text-decoration: none;
+        border-bottom: 1px dotted #dedede;
+      }
+
+      .logo {
+        display: inline-block;
+        height: 60px;
+        font-size: 24px;
+        line-height: 60px;
+        color: #4285f4;
+        vertical-align: base-line;
       }
 
       .sub {
+        font-size: 12px;
+        color: #9c9c9c;
+        padding: 0 5px;
+      }
+
+      .market {
+        background-color: #4285f4;
+        height: 398px;
+        position: absolute;
+        top: 60px;
+        width: 100%;
+        outline: none;
         display: block;
-        padding-bottom: 10px;
+        z-index: -1;
       }
 
       .container {
-        width: 100%;
+        width: 80%;
       }
 
-      .placeholder,
-      .market {
-        display: none;
+      .placeholder {
+        height: 56px;
       }
-    }
 
-    .content {
-      background: #fff;
-      padding: 10px;
-    }
+      @media screen and (max-width: 720px) {
+        header {
+          text-align: center;
+        }
 
-    .prolist {
-      padding: 10px 20px 20px 20px;
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.5;
-    }
+        .sub {
+          display: block;
+          padding-bottom: 10px;
+        }
 
-    blockquote {
-      margin: 10px 0;
-      padding: 0 1em;
-      color: #6a737d;
-      border-left: 0.25em solid #dfe2e5;
-    }
+        .container {
+          width: 100%;
+        }
 
-    #github {
-      padding: 20px 0;
-    }
+        .placeholder,
+        .market {
+          display: none;
+        }
+      }
 
-    .copy {
-      line-height: 60px;
-      text-align: center;
-      font-size: 14px;
-      color: #9c9c9c;
-    }
+      .content {
+        background: #fff;
+        padding: 10px;
+      }
 
-  </style>
-  <script src="//cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
-  <script src="./dist/Hitalk.min.js"></script>
-</head>
+      .prolist {
+        padding: 10px 20px 20px 20px;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.5;
+      }
 
-<body>
-  <div class="market"></div>
-  <header>
-    <div class="container">
-      <a href="./" class="logo">Hitalk</a>
-      <span class="sub">A simple comment system based on Leancloud.</span>
-    </div>
-  </header>
-  <div class="container">
-    <div class="placeholder"></div>
-    <div class="content">
-      <div id="github">
-        <iframe allowtransparency="true" frameborder="0" scrolling="0" width="98" height="20"></iframe>
-        <iframe allowtransparency="true" frameborder="0" scrolling="0" width="156" height="20"></iframe>
+      blockquote {
+        margin: 10px 0;
+        padding: 0 1em;
+        color: #6a737d;
+        border-left: 0.25em solid #dfe2e5;
+      }
+
+      #github {
+        padding: 20px 0;
+      }
+
+      .copy {
+        line-height: 60px;
+        text-align: center;
+        font-size: 14px;
+        color: #9c9c9c;
+      }
+    </style>
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+    <script src="./dist/Hitalk.min.js"></script>
+  </head>
+
+  <body>
+    <div class="market"></div>
+    <header>
+      <div class="container">
+        <a href="./" class="logo">Hitalk</a>
+        <span class="sub">A simple comment system based on Leancloud.</span>
       </div>
-      <div>
-        <!-- <span class="post-comments-count hitalk-comment-count" data-xid="/" itemprop="commentCount"></span>
+    </header>
+    <div class="container">
+      <div class="placeholder"></div>
+      <div class="content">
+        <div id="github">
+          <iframe allowtransparency="true" frameborder="0" scrolling="0" width="98" height="20"></iframe>
+          <iframe allowtransparency="true" frameborder="0" scrolling="0" width="156" height="20"></iframe>
+        </div>
+        <div>
+          <!-- <span class="post-comments-count hitalk-comment-count" data-xid="/" itemprop="commentCount"></span>
         <span class="post-comments-count hitalk-comment-count" data-xid="/posts/javascript/PWA/2019-02-18-progressive-web-apps-blog.html" itemprop="commentCount"></span>
         <span class="post-comments-count hitalk-comment-count" data-xid="/posts/Hexo/2018-05-27-hexo-code-block.html" itemprop="commentCount"></span> -->
+        </div>
+        <!-- 评论数量 -->
+        <div class="comment"></div>
       </div>
-      <!-- 评论数量 -->
-      <div class="comment"></div>
     </div>
-  </div>
-  <div class="copy">
-    &copy; 2019
-    <a href="https://github.com/Ihoey" target="_blank">梦魇小栈</a>
-  </div>
-  <script>
-    var Hitalk = new Hitalk({
-      el: '.comment',
-      appId: 'Ir6SE0GwBzFxczMqXXVpCF8d-gzGzoHsz',
-      appKey: 'SnlgtrRYvxJimSYDRw2GBr6H',
-      placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
-      avatar: 'monsterid',
-      path: '/'
-    });
+    <div class="copy">
+      &copy; 2019
+      <a href="https://github.com/Ihoey" target="_blank">梦魇小栈</a>
+    </div>
+    <script>
+      var Hitalk = new Hitalk({
+        el: '.comment',
+        appId: 'Ir6SE0GwBzFxczMqXXVpCF8d-gzGzoHsz',
+        appKey: 'SnlgtrRYvxJimSYDRw2GBr6H',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar: 'monsterid',
+        path: '/'
+      })
 
-    window.onload = function() {
-      var iframes = document.querySelectorAll('iframe');
-      iframes[0].setAttribute('src',
-        'https://ghbtns.com/github-btn.html?user=ihoey&repo=Hitalk&type=watch&count=true');
-      iframes[1].setAttribute('src', 'https://ghbtns.com/github-btn.html?user=ihoey&type=follow&count=true');
-    }
-
-  </script>
-</body>
-
+      window.onload = function () {
+        var iframes = document.querySelectorAll('iframe')
+        iframes[0].setAttribute(
+          'src',
+          'https://ghbtns.com/github-btn.html?user=ihoey&repo=Hitalk&type=watch&count=true'
+        )
+        iframes[1].setAttribute('src', 'https://ghbtns.com/github-btn.html?user=ihoey&type=follow&count=true')
+      }
+    </script>
+  </body>
 </html>
