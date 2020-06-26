@@ -1,11 +1,3 @@
-/*
- * @Author: Ihoey
- * @Email: mail@ihoey.com
- * @Date: 2020-06-25 17:02:34
- * @LastEditors: Ihoey
- * @LastEditTime: 2020-06-25 17:05:52
- */
-
 const HtmlUtil = {
   /**
    * HTML转码

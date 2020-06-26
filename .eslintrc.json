@@ -1,0 +1,21 @@
+{
+  "extends": "airbnb-base",
+  "globals": {
+    "window": true,
+    "Hitalk": true
+  },
+  "rules": {
+    "semi": [2, "never"],
+    "comma-dangle": ["error", "never"],
+    "no-param-reassign": [0],
+    "func-names": [0],
+    "import/no-extraneous-dependencies": [0],
+    "import/no-unresolved": [
+      2,
+      {
+        "ignore": ["Hitalk"]
+      }
+    ],
+    "import/extensions": [2, "never"]
+  }
+}

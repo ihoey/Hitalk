@@ -3,14 +3,14 @@
  * @Email: mail@ihoey.com
  * @Date: 2018-04-20 23:53:17
  * @LastEditors: Ihoey
- * @LastEditTime: 2020-06-25 17:08:06
+ * @LastEditTime: 2020-06-26 17:59:27
  */
 
 import md5 from 'blueimp-md5'
 import marked from 'marked'
 import detect from './detect'
 import './Hitalk.scss'
-import { version } from '../package'
+import { version } from '../package.json'
 import { HtmlUtil, Event, check, getLink, dateFormat, timeAgo } from './utils'
 
 const gravatar = {
@@ -663,4 +663,4 @@ class Hitalk {
   }
 }
 
-module.exports = Hitalk
+export default Hitalk

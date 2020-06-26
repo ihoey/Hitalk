@@ -1,13 +1,6 @@
-/*
- * @Author: ihoey
- * @Date: 2018-04-22 21:12:45
- * @Last Modified by: ihoey
- * @Last Modified time: 2019-06-26 10:47:33
- */
-
 .Hitalk {
   box-sizing: border-box;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 
   * {
     box-sizing: inherit;
@@ -24,7 +17,7 @@
     outline: none;
     padding: 10px 0;
     max-width: 100%;
-    font-size: .775rem;
+    font-size: 0.775rem;
   }
 
   .vwrap {
@@ -41,7 +34,7 @@
     .welcome {
       position: relative;
       padding-bottom: 10px;
-      font-size: .875rem;
+      font-size: 0.875rem;
       color: rgb(117, 117, 117);
       border-bottom: 1px #dedede dashed;
       user-select: none;
@@ -50,13 +43,12 @@
         color: #9499a8;
         cursor: pointer;
       }
-
     }
 
     .vheader {
       visibility: visible;
       opacity: 1;
-      transition: all .2s linear;
+      transition: all 0.2s linear;
 
       .vinput {
         width: 33.33%;
@@ -81,7 +73,7 @@
         border-bottom-color: #eb5055;
       }
 
-      @media screen and (max-width:520px) {
+      @media screen and (max-width: 520px) {
         .vinput {
           width: 100%;
         }
@@ -99,7 +91,7 @@
 
       .col {
         display: inline-block;
-        font-size: .725rem;
+        font-size: 0.725rem;
         vertical-align: middle;
         color: #ccc;
 
@@ -130,7 +122,7 @@
 
     .vmark {
       position: absolute;
-      background: rgba(0, 0, 0, .65);
+      background: rgba(0, 0, 0, 0.65);
       width: 100%;
       height: 100%;
       left: 0;
@@ -181,7 +173,7 @@
     padding: 5px;
 
     .col {
-      font-size: .875rem;
+      font-size: 0.875rem;
       display: inline-block;
       width: 50%;
       vertical-align: middle;
@@ -204,8 +196,8 @@
     }
   }
 
-  >ul,
-  >li {
+  > ul,
+  > li {
     list-style: none;
     margin: 0 auto;
     padding: 0;
@@ -230,17 +222,17 @@
   .veditor {
     width: 100%;
     height: 8.75rem;
-    font-size: .875rem;
+    font-size: 0.875rem;
     border-bottom: 1px dashed #dedede;
     background: url(https://cdn.dode.top/plbj.png) right bottom no-repeat;
   }
 
   .vbtn {
-    transition-duration: .4s;
+    transition-duration: 0.4s;
     text-align: center;
     color: #313131;
     border: 1px solid #f7f7f7;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     background-color: #f7f7f7;
     display: inline-block;
     background: #ededed;
@@ -250,13 +242,13 @@
     touch-action: manipulation;
     cursor: pointer;
     white-space: nowrap;
-    padding: .5rem 1.25rem;
-    font-size: .875rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
     line-height: 1.42857143;
     user-select: none;
     outline: none;
 
-    &+.vbtn {
+    & + .vbtn {
       margin-left: 1.25rem;
     }
   }
@@ -293,7 +285,7 @@
         height: 2.5rem;
         float: left;
         border-radius: 50%;
-        margin-right: .7525rem;
+        margin-right: 0.7525rem;
         transition: all 1s;
 
         &:hover {
@@ -303,28 +295,28 @@
 
       .vhead {
         line-height: 1;
-        margin-bottom: .625rem;
+        margin-bottom: 0.625rem;
         margin-top: 0;
 
         a {
-          font-size: .8135rem;
+          font-size: 0.8135rem;
           font-weight: 700;
           color: rgb(44, 32, 32);
-          margin-right: .875rem;
+          margin-right: 0.875rem;
 
           &:hover {
-            color: #D7191A;
+            color: #d7191a;
           }
         }
 
         .vsys {
           display: inline-block;
-          padding: .2rem .5rem;
+          padding: 0.2rem 0.5rem;
           background: #ededed;
           color: #b3b1b1;
-          font-size: .75rem;
-          border-radius: .2rem;
-          margin-right: .3rem;
+          font-size: 0.75rem;
+          border-radius: 0.2rem;
+          margin-right: 0.3rem;
         }
       }
 
@@ -338,12 +330,12 @@
 
           .vtime {
             color: #b3b3b3;
-            font-size: .75rem;
-            margin-right: .875rem;
+            font-size: 0.75rem;
+            margin-right: 0.875rem;
           }
 
           .vat {
-            font-size: .8125rem;
+            font-size: 0.8125rem;
             color: #ef2f11;
             cursor: pointer;
           }
@@ -354,11 +346,11 @@
         word-wrap: break-word;
         word-break: break-all;
         text-align: justify;
-        color: #4A4A4A;
-        font-size: .875rem;
+        color: #4a4a4a;
+        font-size: 0.875rem;
         line-height: 2;
         position: relative;
-        margin-bottom: .75rem;
+        margin-bottom: 0.75rem;
 
         ol,
         ul {
@@ -370,12 +362,12 @@
         }
 
         a {
-          font-size: .875rem;
+          font-size: 0.875rem;
           color: #708090;
           text-decoration: double;
 
           &:hover {
-            color: #D7191A;
+            color: #d7191a;
           }
         }
 
@@ -389,7 +381,7 @@
           color: #555;
           background: #f5f2f2;
           border-radius: 3px;
-          font-size: .875rem;
+          font-size: 0.875rem;
           margin: 5px 0;
         }
 
@@ -400,19 +392,19 @@
 
           &:before {
             display: block;
-            content: "";
+            content: '';
             position: absolute;
             width: 100%;
             left: 0;
             top: 0;
             bottom: 3.15rem;
             pointer-events: none;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .9));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9));
           }
 
           &:after {
             display: block;
-            content: "Click on expand";
+            content: 'Click on expand';
             text-align: center;
             color: #828586;
             position: absolute;
@@ -422,7 +414,7 @@
             left: 0;
             bottom: 0;
             pointer-events: none;
-            background: rgba(255, 255, 255, .9);
+            background: rgba(255, 255, 255, 0.9);
           }
         }
       }
@@ -430,7 +422,7 @@
   }
 
   .vpage {
-    padding: .85rem;
+    padding: 0.85rem;
     user-select: none;
 
     .page-numbers {
@@ -451,7 +443,6 @@
       font-size: 15px;
       cursor: default;
     }
-
   }
 
   .clear {
@@ -469,10 +460,10 @@
     font-size: 10px;
   }
 
-  .spinner>div {
+  .spinner > div {
     background-color: #9c9c9c;
     height: 100%;
-    width: .375rem;
+    width: 0.375rem;
     margin-right: 0.19rem;
     display: inline-block;
     -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
@@ -485,8 +476,8 @@
   }
 
   .spinner .r3 {
-    -webkit-animation-delay: -1.0s;
-    animation-delay: -1.0s;
+    -webkit-animation-delay: -1s;
+    animation-delay: -1s;
   }
 
   .spinner .r4 {
@@ -500,20 +491,18 @@
   }
 
   @-webkit-keyframes sk-stretchdelay {
-
     0%,
     40%,
     100% {
-      -webkit-transform: scaleY(0.4)
+      -webkit-transform: scaleY(0.4);
     }
 
     20% {
-      -webkit-transform: scaleY(1.0)
+      -webkit-transform: scaleY(1);
     }
   }
 
   @keyframes sk-stretchdelay {
-
     0%,
     40%,
     100% {
@@ -522,8 +511,8 @@
     }
 
     20% {
-      transform: scaleY(1.0);
-      -webkit-transform: scaleY(1.0);
+      transform: scaleY(1);
+      -webkit-transform: scaleY(1);
     }
   }
 }
