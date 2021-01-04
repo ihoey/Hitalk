@@ -3,7 +3,7 @@
  * @Email: mail@ihoey.com
  * @Date: 2018-04-20 23:53:17
  * @LastEditors: Ihoey
- * @LastEditTime: 2020-06-26 17:59:27
+ * @LastEditTime: 2021-01-04 16:33:14
  */
 
 import md5 from 'blueimp-md5'
@@ -52,7 +52,7 @@ class Hitalk {
     const av = option.av || AV
     const appId = option.app_id || option.appId
     const appKey = option.app_key || option.appKey
-    const serverURLs = option.serverURLs || 'https://hitalk.dode.top'
+    const serverURLs = option.serverURLs || 'https://hitalk-api.ihoey.com'
 
     if (!appId || !appKey) {
       this.throw('初始化失败，请检查你的appid或者appkey.')
@@ -306,7 +306,7 @@ class Hitalk {
         smiliesData[y].split('|').forEach(e => {
           _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${
             (y == sl ? '@' : '#') + `(${e})`
-          }"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
+          }"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.ihoey.com/${
             y == sl ? 'newpaopao' : 'alu'
           }/${e + subfix}.png"></li>`
         })
@@ -532,7 +532,7 @@ class Hitalk {
       while ((matched = defaultComment.comment.match(pReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="https://cdn.dode.top/newpaopao/${
+          `<img src="https://cdn.ihoey.com/newpaopao/${
             matched[1] + subfix
           }.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
         )
@@ -540,7 +540,7 @@ class Hitalk {
       while ((matched = defaultComment.comment.match(aReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="https://cdn.dode.top/alu/${
+          `<img src="https://cdn.ihoey.com/alu/${
             matched[1] + subfix
           }.png" class="biaoqing alu" height=33 width=33 no-zoom />`
         )

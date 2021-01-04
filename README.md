@@ -2,7 +2,6 @@
 
 > 一款快速、简洁且高效的无后端评论系统。
 
-
 ## 是什么
 
 `Hitalk` 是一款基于 `Leancloud` 的快速、简洁且高效的无后端评论系统。
@@ -38,18 +37,18 @@ https://sponsor.ihoey.com/
 
 ```html
 <head>
-    ...
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-    <script src='//cdn.dode.top/Hitalk.min.js'></script>
-    ...
+  ...
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.ihoey.com/Hitalk.min.js"></script>
+  ...
 </head>
 <body>
-    ...
-    <div id="comment"></div>
+  ...
+  <div id="comment"></div>
 </body>
 ```
 
-### 获取appid和appkey
+### 获取 appid 和 appkey
 
 请先登录或注册 [LeanCloud](https://leancloud.cn/), 进入控制台后点击左下角创建应用：
 
@@ -57,25 +56,23 @@ https://sponsor.ihoey.com/
 
 **为了您的数据安全，请注意设置自己的安全域名~**
 
-
 ### 配置
 
 修改初始化对象中的 `appId` 和 `appKey` 的值为上面刚刚获取到的值即可(其他可以默认)。
 
 ```js
 new Hitalk({
-    el: '#comment' ,
-    appId: '这里填上面获得的appid',
-    appKey: '这里填上面获得的appkey',
-    placeholder: 'just go go',
-    path:window.location.pathname,
-    avatar:'mm'
-});
-
+  el: '#comment',
+  appId: '这里填上面获得的appid',
+  appKey: '这里填上面获得的appkey',
+  placeholder: 'just go go',
+  path: window.location.pathname,
+  avatar: 'mm'
+})
 ```
 
 ### 评论数据管理
 
 关于评论数据管理，请自行登录 `Leancloud` 应用管理。
 具体步骤：登录 > 选择你创建的应用 > 存储 > 选择 `Class` > `Comment`
-然后就可以尽情的发挥你的权利啦(～￣▽￣)～
+然后就可以尽情的发挥你的权利啦(～￣ ▽ ￣)～
