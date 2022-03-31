@@ -3,7 +3,7 @@
  * @Email: mail@ihoey.com
  * @Date: 2018-04-20 23:53:17
  * @LastEditors: Ihoey
- * @LastEditTime: 2021-01-04 16:33:14
+ * @LastEditTime: 2022-03-31 17:11:36
  */
 
 import md5 from 'blueimp-md5'
@@ -33,15 +33,15 @@ const defaultComment = {
 const GUEST_INFO = ['nick', 'mail', 'link']
 const store = localStorage
 
-const smiliesData = {
+const smilesData = {
   泡泡: `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
   阿鲁: `高兴|小怒|脸红|内伤|装大款|赞一个|害羞|汗|吐血倒地|深思|不高兴|无语|亲亲|口水|尴尬|中指|想一想|哭泣|便便|献花|皱眉|傻笑|狂汗|吐|喷水|看不见|鼓掌|阴暗|长草|献黄瓜|邪恶|期待|得意|吐舌|喷血|无所谓|观察|暗地观察|肿包|中枪|大囧|呲牙|抠鼻|不说话|咽气|欢呼|锁眉|蜡烛|坐等|击掌|惊喜|喜极而泣|抽烟|不出所料|愤怒|无奈|黑线|投降|看热闹|扇耳光|小眼睛|中刀`
 }
-const pReg = new RegExp('\\@\\(\\s*(' + smiliesData.泡泡 + ')\\s*\\)')
-const aReg = new RegExp('\\#\\(\\s*(' + smiliesData.阿鲁 + ')\\s*\\)')
-let subfix = ''
+const pReg = new RegExp('\\@\\(\\s*(' + smilesData.泡泡 + ')\\s*\\)')
+const aReg = new RegExp('\\#\\(\\s*(' + smilesData.阿鲁 + ')\\s*\\)')
+let suffix = ''
 if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
-  subfix = '@2x'
+  suffix = '@2x'
 }
 
 class Hitalk {
@@ -111,10 +111,10 @@ class Hitalk {
               <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
           </div>
           <div class="vcontrol">
-              <span class="col col-60 smilies">
-                  <div class="col smilies-logo"><span>^_^</span></div>
+              <span class="col col-60 smiles">
+                  <div class="col smiles-logo"><span>^_^</span></div>
                   <div class="col" title="Markdown is Support">MarkDown is Support</div>
-                  <div class="smilies-body"></div>
+                  <div class="smiles-body"></div>
               </span>
               <div class="col col-40 text-right">
                   <button type="button" class="vsubmit vbtn">回复</button>
@@ -228,8 +228,8 @@ class Hitalk {
       vArr[i] = this.commonQuery(url)
     }
 
-    const cq = new this.v.Query.or(...vArr)
-    cq.select('url')
+    new this.v.Query.or(...vArr).cq
+      .select('url')
       .limit(1000)
       .find()
       .then(res => {
@@ -293,70 +293,68 @@ class Hitalk {
     }
 
     // 填充表情节点
-    let addSmilies = () => {
-      let _smilies = this.el.querySelector('.smilies-body')
+    let addSimiles = () => {
+      let _smiles = this.el.querySelector('.smiles-body')
       let _ul,
         _li = ''
       let fragment = document.createDocumentFragment()
       const sl = '泡泡'
-      Object.keys(smiliesData).forEach((y, i) => {
+      Object.keys(smilesData).forEach((y, i) => {
         _ul = document.createElement('ul')
-        _ul.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == sl ? ' smilies-items-show' : ''))
+        _ul.setAttribute('class', 'smiles-items smiles-items-biaoqing' + (y == sl ? ' smiles-items-show' : ''))
         _ul.setAttribute('data-id', i)
-        smiliesData[y].split('|').forEach(e => {
-          _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${
+        smilesData[y].split('|').forEach(e => {
+          _ul.innerHTML += `<li class="smiles-item" title="${e}" data-input="${
             (y == sl ? '@' : '#') + `(${e})`
           }"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.ihoey.com/${
             y == sl ? 'newpaopao' : 'alu'
-          }/${e + subfix}.png"></li>`
+          }/${e + suffix}.png"></li>`
         })
-        _li += `<li class="smilies-name ${
-          y == sl ? 'smilies-package-active' : ''
-        }" data-id="${i}"><span>${y}</span></li>`
+        _li += `<li class="smiles-name ${y == sl ? 'smiles-package-active' : ''}" data-id="${i}"><span>${y}</span></li>`
         fragment.appendChild(_ul) //添加ul
       })
       let _div = document.createElement('div')
-      _div.setAttribute('class', 'smilies-bar')
-      _div.innerHTML = `<ul class="smilies-packages">${_li}</ul>`
+      _div.setAttribute('class', 'smiles-bar')
+      _div.innerHTML = `<ul class="smiles-packages">${_li}</ul>`
       fragment.appendChild(_div) //再次添加div
-      _smilies.appendChild(fragment)
+      _smiles.appendChild(fragment)
 
-      let smilies = document.querySelector('.smilies')
+      let smiles = document.querySelector('.smiles')
       let _el = document.querySelector('.veditor')
 
-      Event.on('click', smilies, e => {
+      Event.on('click', smiles, e => {
         e = e.target
-        if (e.className == 'smilies-item') {
+        if (e.className == 'smiles-item') {
           _el.value += ` ${e.getAttribute('data-input')} `
           defaultComment.comment = marked(_el.value, {
             sanitize: !0,
             breaks: !0
           })
-          smilies.classList.remove('smilies-open')
-        } else if (e.classList.contains('smilies-logo')) {
-          smilies.classList.toggle('smilies-open')
-        } else if (e.classList.contains('smilies-name')) {
-          if (!e.classList.contains('smilies-package-active')) {
-            document.querySelectorAll('.smilies-name').forEach(e => e.classList.remove('smilies-package-active'))
-            document.querySelectorAll('.smilies-items').forEach(e => e.classList.remove('smilies-items-show'))
-            document.querySelectorAll('.smilies-items')[e.getAttribute('data-id')].classList.add('smilies-items-show')
-            e.classList.add('smilies-package-active')
+          smiles.classList.remove('smiles-open')
+        } else if (e.classList.contains('smiles-logo')) {
+          smiles.classList.toggle('smiles-open')
+        } else if (e.classList.contains('smiles-name')) {
+          if (!e.classList.contains('smiles-package-active')) {
+            document.querySelectorAll('.smiles-name').forEach(e => e.classList.remove('smiles-package-active'))
+            document.querySelectorAll('.smiles-items').forEach(e => e.classList.remove('smiles-items-show'))
+            document.querySelectorAll('.smiles-items')[e.getAttribute('data-id')].classList.add('smiles-items-show')
+            e.classList.add('smiles-package-active')
           }
         }
       })
 
       Event.on('mouseup', document, e => {
         e = e.target
-        let _con = document.querySelector('.smilies')
+        let _con = document.querySelector('.smiles')
         if (!_con === e || !_con.contains(e)) {
-          smilies.classList.remove('smilies-open')
+          smiles.classList.remove('smiles-open')
         }
       })
     }
 
     let query = () => {
       this.loading.show()
-      addSmilies() // 填充表情
+      addSimiles() // 填充表情
       let cq = this.commonQuery()
       cq.limit(this.pageSize)
         .skip(this.page * this.pageSize)
@@ -533,7 +531,7 @@ class Hitalk {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
           `<img src="https://cdn.ihoey.com/newpaopao/${
-            matched[1] + subfix
+            matched[1] + suffix
           }.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
         )
       }
@@ -541,12 +539,12 @@ class Hitalk {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
           `<img src="https://cdn.ihoey.com/alu/${
-            matched[1] + subfix
+            matched[1] + suffix
           }.png" class="biaoqing alu" height=33 width=33 no-zoom />`
         )
       }
 
-      // veirfy
+      // verify
       let mailRet = check.mail(defaultComment.mail)
       let linkRet = check.link(defaultComment.link)
       defaultComment['mail'] = mailRet.k ? mailRet.v : ''

@@ -1,6 +1,6 @@
 {
   "name": "hitalk",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "一款快速、简洁且高效的无后端评论系统",
   "main": "./lib/Hitalk.js",
   "module": "./lib/Hitalk.es.js",
@@ -44,7 +44,7 @@
     "rollup-plugin-terser": "^6.1.0"
   },
   "scripts": {
-    "build:rollup": "BABEL_ENV=build rollup -c --environment NODE_ENV:production && yarn bili",
+    "build:rollup": "BABEL_ENV=build rollup -c --environment NODE_ENV:production",
     "build:dev": "BABEL_ENV=dev rollup -c -w --environment NODE_ENV:development"
   },
   "repository": {

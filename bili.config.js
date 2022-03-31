@@ -3,9 +3,10 @@ const config = {
   banner: true,
   output: {
     dir: 'lib',
-    format: ['cjs', 'es'],
+    format: ['cjs', 'es', 'umd', 'umd-min', 'iife'],
     moduleName: 'Hitalk',
-    sourceMap: false
+    sourceMap: false,
+    extractCSS: false
   },
   babel: {
     minimal: true

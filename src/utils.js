@@ -99,7 +99,7 @@ const Event = {
 }
 
 const getLink = target => {
-  return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);'
+  return HtmlUtil.encode(target.link) || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);'
 }
 
 const check = {
