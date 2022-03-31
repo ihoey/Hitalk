@@ -3,7 +3,7 @@
  * @Email: mail@ihoey.com
  * @Date: 2018-04-20 23:53:17
  * @LastEditors: Ihoey
- * @LastEditTime: 2022-03-31 17:11:36
+ * @LastEditTime: 2022-03-31 19:07:30
  */
 
 import md5 from 'blueimp-md5'
@@ -228,16 +228,12 @@ class Hitalk {
       vArr[i] = this.commonQuery(url)
     }
 
-    new this.v.Query.or(...vArr).cq
-      .select('url')
+    const cq = this.v.Query.or(...vArr)
+    cq.select('url')
       .limit(1000)
       .find()
-      .then(res => {
-        urlArr.map((e, i) => (pCount[i].innerText = res.filter(x => e === x.get('url')).length))
-      })
-      .catch(ex => {
-        this.throw(ex)
-      })
+      .then(res => urlArr.map((e, i) => (pCount[i].innerText = res.filter(x => e === x.get('url')).length)))
+      .catch(this.throw)
   }
   /**
    * Bind Event
@@ -265,7 +261,7 @@ class Hitalk {
       _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({
         link: ret.get('link'),
         mail: ret.get('mail')
-      })}" target="_blank" >${ret.get('nick')}</a>
+      })}" target="_blank" >${HtmlUtil.encode(ret.get('nick'))}</a>
       <span class="vsys">${_ua.os} ${_ua.osVersion}</span>
       <span class="vsys">${_ua.browser} ${_ua.version}</span>
       </div><div class="vcontent">${ret.get('comment')}</div><div class="vfooter"><span class="vtime">${timeAgo(
