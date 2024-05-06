@@ -38,7 +38,7 @@ https://sponsor.ihoey.com/
 ```html
 <head>
   ...
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
   <script src="//cdn.ihoey.com/Hitalk.min.js"></script>
   ...
 </head>
